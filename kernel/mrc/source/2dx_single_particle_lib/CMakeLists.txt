@@ -119,7 +119,7 @@ add_library(${2DX_SP} STATIC ${2DX_SP_CPP})
 add_subdirectory(Runners)
 
 if( (${HOSTNAME} STREQUAL "sebastian-ThinkPad-T410s") OR (${HOSTNAME} STREQUAL "cina-buildtst02") OR (${HOSTNAME} STREQUAL "maia.cluster") OR ((${HOSTNAME} STREQUAL "bs-powerlinux-ethz-ch") AND NOT (CMAKE_CXX_COMPILER STREQUAL "/opt/intel/composer_xe_2013.2.146/bin/intel64/icpc") ))
-	add_subdirectory(ParallelRunners)
+	#add_subdirectory(ParallelRunners)
 endif()
 
 if($ENV{BRUTUS_2DX})
