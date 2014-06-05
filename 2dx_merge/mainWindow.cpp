@@ -151,7 +151,7 @@ mainWindow::mainWindow(const QString &directory, QWidget *parent)
   connect(singleParticleScripts,SIGNAL(scriptCompleted(QModelIndex)),this,SLOT(singleParticleScriptCompleted(QModelIndex)));
   connect(singleParticleScripts,SIGNAL(reload()),this,SLOT(reload()));
   connect(this,SIGNAL(execute(bool)),singleParticleScripts,SLOT(execute(bool)));
-  QWidget *singleParticleScriptWidget = setupScriptContainer(singleParticleScripts, "Single-particle Scripts");
+  QWidget *singleParticleScriptWidget = setupScriptContainer(singleParticleScripts, "Single-particle (Linux only)");
   connect(singleParticleScripts,SIGNAL(progress(int)),progressBar,SLOT(setValue(int)));
   connect(singleParticleScripts,SIGNAL(incrementProgress(int)),progressBar,SLOT(incrementValue(int)));
 
