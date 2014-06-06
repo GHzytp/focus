@@ -51,10 +51,7 @@ SingleParticle2dx::ConfigContainer* SingleParticle2dx::ConfigContainer::Instance
 	}
 	else
 	{
-		// FIXME
 		return m_instance.get();
-		//std::cerr << "config went wrong" << std::endl;
-		//throw std::runtime_error("Bad operation");
 	}
 }
 
@@ -68,12 +65,10 @@ SingleParticle2dx::ConfigContainer::ConfigContainer()
 
 	if (boost::filesystem::exists("mergevars_written_to_file.txt"))
 	{
-		std::cout << "::merge variables are there" << std::endl;
 		setup();
 	}
 	else
 	{
-		std::cout << "::merge variables are NOT there" << std::endl;
 		m_is_valid = false;
 	}	
 }

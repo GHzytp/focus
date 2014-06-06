@@ -14,7 +14,9 @@
 # SORTORDER: 20
 #
 #
-# MANUAL: Single Particle Refinement (still under construction)
+# MANUAL: Select a folder and run the script
+#
+# MANUAL: The script generates a folder in which all single particle refinement related output will be stored
 #
 # DISPLAY: cont_folder_sp2dx
 #
@@ -31,13 +33,16 @@ echo "<<@progress: 1>>"
 
 set scriptname = CreateContainer
 
-
 \rm -f LOGS/${scriptname}.results
 echo "<<@evaluate>>"
 
 set > mergevars_written_to_file.txt
 
+${proc_2dx}/linblock "Generating folder"
+
 ${bin_2dx}/2dx_singleparticle/CreateCont.exe
+
+${proc_2dx}/linblock "Successfully finished"
 
 echo "<<@progress: 100>>"
 

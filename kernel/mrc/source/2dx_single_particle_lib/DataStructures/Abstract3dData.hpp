@@ -161,7 +161,7 @@ namespace SingleParticle2dx
 			 */
 			void applyLowPassFilter()
 			{
-				std::cout << "::apply LP on 3D-data r=" << m_lowpass_radius << " , sigma=" << m_lowpass_relax_param << std::endl;
+				std::cout << ":apply LP on 3D-data r=" << m_lowpass_radius << " , sigma=" << m_lowpass_relax_param << std::endl;
 				SingleParticle2dx::Utilities::DataContainerFunctions::applyLowPassFilter( m_fourier_data.get(), m_lowpass_radius, m_lowpass_relax_param);
 			}
 			

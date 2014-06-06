@@ -13,8 +13,9 @@
 #
 # SORTORDER: 30
 #
+# MANUAL: Uses the volume.map file to cut the initial volume for the 3D single-particle refinment.
 #
-# MANUAL: Single Particle Refinement (still under construction)
+# MANUAL: The resulting map has to be centred and the only the central protein should be inside the mask.
 #
 # DISPLAY: particle_size_sp2dx
 # DISPLAY: cont_folder_sp2dx
@@ -59,11 +60,9 @@ set lp_volume_filter_incharge = $lp_volume_filter_init_sp2dx
 \rm -f LOGS/${scriptname}.results
 echo "<<@evaluate>>"
 
-
 echo "set called now"
 #rm mergevars_written_to_file.txt
 set > mergevars_written_to_file.txt
-
 
 ${bin_2dx}/2dx_singleparticle/GenerateInitModel.exe
 

@@ -21,7 +21,7 @@ int main ()
 	
 	SingleParticle2dx::Utilities::UtilityFunctions::generateInitialModelForInitRef(rec3d);
 	
-	rec3d.scale(1/1.34);
+//	rec3d.scale(1/1.34);
 	
 	SingleParticle2dx::Utilities::UtilityFunctions::setProgressBar( 33 );
 	
