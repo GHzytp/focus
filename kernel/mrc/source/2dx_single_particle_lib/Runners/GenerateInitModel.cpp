@@ -17,8 +17,8 @@ int main ()
 	config->setBackprojectionMethod(0);
 	config->setLPProjectionRadius(n);
 	
+	SingleParticle2dx::Utilities::UtilityFunctions::generate2dxOutput("==== Loading Volume", 1);
 	SingleParticle2dx::DataStructures::Reconstruction3d rec3d(n,n,n);
-	
 	SingleParticle2dx::Utilities::UtilityFunctions::generateInitialModelForInitRef(rec3d);
 	
 //	rec3d.scale(1/1.34);
@@ -35,6 +35,8 @@ int main ()
 	SingleParticle2dx::DataStructures::Orientation o1(0,0,0);
 	SingleParticle2dx::DataStructures::Orientation o2(0,90,0);
 	SingleParticle2dx::DataStructures::Orientation o3(0,90,90);
+	
+	SingleParticle2dx::Utilities::UtilityFunctions::generate2dxOutput("==== Calculating Projections", 1);
 	
 	rec3d.calculateProjection(o1, proj1);
 	rec3d.calculateProjection(o2, proj2);
@@ -58,6 +60,8 @@ int main ()
 	proj2.writeToFile(filename_p2);
 	proj3.writeToFile(filename_p3);
 	
+	SingleParticle2dx::Utilities::UtilityFunctions::generate2dxOutput("==== Writing Output", 1);
+	
 	SingleParticle2dx::Utilities::UtilityFunctions::generateImageOutput(filename_p1, "Top View", config->getScriptName(), false, false);
 	SingleParticle2dx::Utilities::UtilityFunctions::generateImageOutput(filename_p2, "Side View X", config->getScriptName(), false, false);
 	SingleParticle2dx::Utilities::UtilityFunctions::generateImageOutput(filename_p3, "Side View Y", config->getScriptName(), false, false);
@@ -66,6 +70,7 @@ int main ()
 	SingleParticle2dx::Utilities::UtilityFunctions::generateImageOutput(config->getContainerName() + "/Rec_3d/Init3DFromMRC.map", "Initial 3D Reference", config->getScriptName(), true, true);
 	
 	SingleParticle2dx::Utilities::UtilityFunctions::setProgressBar( 100 );
+	SingleParticle2dx::Utilities::UtilityFunctions::generate2dxOutput("==== Finished Correctly", 1);
 	
 	return 0;
 }
