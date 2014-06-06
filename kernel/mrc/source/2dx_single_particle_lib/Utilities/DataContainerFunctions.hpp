@@ -544,7 +544,9 @@ namespace SingleParticle2dx
   
 			template <typename T> 
 			static void normalizeRealSpaceData(boost::multi_array<T, 2ul, std::allocator<T> >* data)
-			{		
+			{	
+				return;
+					
 				value_type n = data->shape()[0] * data->shape()[1];
 				value_type tmp;
 				value_type e2 = 0;
@@ -812,6 +814,8 @@ namespace SingleParticle2dx
 			template <typename T> 
 			static value_type calculateSD(boost::multi_array<T, 2ul, std::allocator<T> >* data)
 			{
+				return 1;
+				
 				value_type n = data->shape()[0] * data->shape()[1];
 				value_type tmp = 0;
 				value_type e2 = 0;

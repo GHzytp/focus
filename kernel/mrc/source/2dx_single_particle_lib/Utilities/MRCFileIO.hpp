@@ -213,21 +213,21 @@ namespace SingleParticle2dx
 					std::cout << "reading file: " << filename << " (" << head.get()->nx << "," << head.get()->ny << "," << head.get()->nz << ")" << std::endl;
 				}
 				
-				/*
-				std::cout << "mapc: " << head.get()->mapc << std::endl;
-				std::cout << "mapr: " << head.get()->mapr << std::endl;
-				std::cout << "maps: " << head.get()->maps << std::endl;
-				std::cout << "mode: " << head.get()->mode << std::endl;
-				std::cout << "size_x: " << head.get()->nx << std::endl;
-				std::cout << "size_y: " << head.get()->ny << std::endl;
-				std::cout << "size_z: " << head.get()->nz << std::endl;
-				std::cout << "xOrigin: " << head.get()->xOrigin << std::endl;
-				std::cout << "yOrigin: " << head.get()->yOrigin << std::endl;
-				std::cout << "zOrigin: " << head.get()->zOrigin << std::endl;
-				std::cout << "nxStart: " << head.get()->nxStart << std::endl;
-				std::cout << "nyStart: " << head.get()->nyStart << std::endl;
-				std::cout << "nzStart: " << head.get()->nzStart << std::endl;
-				*/
+				
+				std::cout << ":mapc: " << head.get()->mapc << std::endl;
+				std::cout << ":mapr: " << head.get()->mapr << std::endl;
+				std::cout << ":maps: " << head.get()->maps << std::endl;
+				std::cout << ":mode: " << head.get()->mode << std::endl;
+				std::cout << ":size_x: " << head.get()->nx << std::endl;
+				std::cout << ":size_y: " << head.get()->ny << std::endl;
+				std::cout << ":size_z: " << head.get()->nz << std::endl;
+				std::cout << ":xOrigin: " << head.get()->xOrigin << std::endl;
+				std::cout << ":yOrigin: " << head.get()->yOrigin << std::endl;
+				std::cout << ":zOrigin: " << head.get()->zOrigin << std::endl;
+				std::cout << ":nxStart: " << head.get()->nxStart << std::endl;
+				std::cout << ":nyStart: " << head.get()->nyStart << std::endl;
+				std::cout << ":nzStart: " << head.get()->nzStart << std::endl;
+				
 				
 				struct
 				{

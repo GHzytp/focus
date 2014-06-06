@@ -481,7 +481,6 @@ SingleParticle2dx::DataStructures::ParticleContainer::size_type SingleParticle2d
 		std::cout << "::using non-masked image" << std::endl;
 	}
 	
-	
 	std::string profile_name = (foldername + "/cc_profile.dat");
 	std::string config_name = (foldername + "/" + "2dx_image.cfg");
 	
@@ -512,7 +511,7 @@ SingleParticle2dx::DataStructures::ParticleContainer::size_type SingleParticle2d
 	}
 		
 	std::vector<value_type> lattice_rec(4,0);
-	lattice_rec[0] = image_config.getConfigElement("lattice")[0];
+	lattice_rec[0] = image_config.getConfigElement("selattice")[0];
 	lattice_rec[1] = image_config.getConfigElement("lattice")[1];
 	lattice_rec[2] = image_config.getConfigElement("lattice")[2];
 	lattice_rec[3] = image_config.getConfigElement("lattice")[3];
@@ -520,15 +519,6 @@ SingleParticle2dx::DataStructures::ParticleContainer::size_type SingleParticle2d
 	value_type tltaxis = image_config.getConfigElement("TLTAXIS")[0] + 90;
 	value_type tltang = image_config.getConfigElement("TANGL")[0];
 	value_type taxa = image_config.getConfigElement("TAXA")[0];
-	
-	/** @todo make it better */
-	if ( config->getIsGLPF() )
-	{
-		if( (tltang<35) && (tltang>25)  )
-		{
-			SingleParticle2dx::Utilities::DataContainerFunctions::invertData(&mrc_input);
-		}
-	}
 
 	std::vector<value_type> lattice_real(4,0);
 	SingleParticle2dx::DataStructures::ParticleContainer::getRealLattice(lattice_rec,  n, lattice_real);
