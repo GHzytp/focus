@@ -102,7 +102,13 @@ set olddir = `pwd`
 foreach dirfile (${dirlist}) 
 	echo "::Extracting profile in ${dirfile}"
 	cd ../${dirfile}
-	cp `ls -1 *.gz` cc_profile.dat.gz
+	if (-e m*.gz) then
+		echo ":using masked profile"
+		cp `ls -1 m*.gz` cc_profile.dat.gz
+	else
+		echo ":using non-masked profile"
+		cp `ls -1 *.gz` cc_profile.dat.gz
+	endif
 	gunzip -f cc_profile.dat.gz
 	#ls *.mrc
 	cd ${olddir}
