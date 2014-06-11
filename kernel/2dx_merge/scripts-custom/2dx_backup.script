@@ -457,8 +457,9 @@ while ( ${dircounter} <= ${dirnum} )
             \mkdir ${to_dirfile}/frames
           endif
           echo dummy > ${from_dirfile}/frames/dummy.tmp
-          echo ":New: ${to_dirfile}/frames/*"
-          cp -f ${from_dirfile}/frames/* ${to_dirfile}/frames
+	  cp -f ${from_dirfile}/frames/dummy.tmp ${to_dirfile}/frames
+          echo ":New: ${to_dirfile}/frames/direct*"
+          cp -f ${from_dirfile}/frames/direct* ${to_dirfile}/frames
           \rm ${from_dirfile}/frames/dummy.tmp
           \rm ${to_dirfile}/frames/dummy.tmp
         endif
