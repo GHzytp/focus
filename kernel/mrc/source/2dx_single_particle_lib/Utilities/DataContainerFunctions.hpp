@@ -563,20 +563,29 @@ namespace SingleParticle2dx
 				{
 					for(size_type j=0; j < static_cast<size_type>(data->shape()[1]); j++)
 					{
+						e += (*data)[i][j]/n;
+					}
+				}
+				
+				for(size_type i=0; i < static_cast<size_type>(data->shape()[0]); i++)
+				{
+					for(size_type j=0; j < static_cast<size_type>(data->shape()[1]); j++)
+					{
 						tmp = (*data)[i][j];
-						e2 += tmp*tmp/n;
-						e += tmp/n;
+						e2 += (tmp-e) * (tmp-e) / n;
 					}
 				}
 				
 				//e2 /= n;
 				//e /= n;
-				value_type sd = sqrt(e2-e*e);
+				value_type sd = sqrt(e2);
 				
 		//		std::cout << "mean:" << e << std::endl;
 		//		std::cout << "mean2:" << e2 << std::endl;
 		//		std::cout << "test2:" << e2-e*e << std::endl;
 		//		std::cout << "sd:" << sd << std::endl;
+		
+				//sd = 1;
 				
 				for(size_type i=0; i < static_cast<size_type>(data->shape()[0]); i++)
 				{
@@ -821,33 +830,24 @@ namespace SingleParticle2dx
 				value_type e2 = 0;
 				value_type e = 0;
 				
-	//			std::cout << "test_sd: " << (*data)[10][10] << std::endl;
+				for(size_type i=0; i < static_cast<size_type>(data->shape()[0]); i++)
+				{
+					for(size_type j=0; j < static_cast<size_type>(data->shape()[1]); j++)
+					{
+						e += (*data)[i][j]/n;
+					}
+				}
 				
 				for(size_type i=0; i < static_cast<size_type>(data->shape()[0]); i++)
 				{
 					for(size_type j=0; j < static_cast<size_type>(data->shape()[1]); j++)
 					{
 						tmp = (*data)[i][j];
-						e2 += tmp*tmp / n;
-						e += tmp / n;
+						e2 += (tmp-e) * (tmp-e) / n;
 					}
 				}
 				
-				//e2 /= n;
-				//e /= n;
-				
-				value_type aux = e2-e*e;
-				value_type sd;
-				
-				if(aux >= 0)
-				{
-					sd = sqrt(aux);
-				}
-				else
-				{
-					//std::cout << "resetting sd" << std::endl;
-					sd = 0;
-				}
+				value_type sd = sqrt(e2);
 				
 				return sd;
 			}
@@ -966,7 +966,7 @@ namespace SingleParticle2dx
 				ctf_part.setDefocus(difmid1/10000.0);
 				ctf_part.setCs(ctf_params.m_cs);
 				ctf_part.setVoltage(ctf_params.m_kv);
-				ctf_part.setApix(1);
+				ctf_part.setApix(1.34);
 				ctf_part.setAmpCon(0.1);
 				ctf_part.setBfactor(0);
 				ctf_part.setAst(0);
