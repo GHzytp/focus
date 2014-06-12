@@ -370,7 +370,7 @@ namespace SingleParticle2dx
 				}
 				
 				//std::cout << (*data)[10][10] << std::endl;
-			//	SingleParticle2dx::Utilities::DataContainerFunctions::normalizeRealSpaceData(data);
+				SingleParticle2dx::Utilities::DataContainerFunctions::normalizeRealSpaceData(data);
 				//std::cout << (*data)[10][10] << std::endl;
 				
 				if(SingleParticle2dx::Utilities::DataContainerFunctions::checkData(data))

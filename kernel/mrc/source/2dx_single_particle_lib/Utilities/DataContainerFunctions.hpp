@@ -545,7 +545,7 @@ namespace SingleParticle2dx
 			template <typename T> 
 			static void normalizeRealSpaceData(boost::multi_array<T, 2ul, std::allocator<T> >* data)
 			{	
-				return;
+				//return;
 					
 				value_type n = data->shape()[0] * data->shape()[1];
 				value_type tmp;
@@ -564,13 +564,13 @@ namespace SingleParticle2dx
 					for(size_type j=0; j < static_cast<size_type>(data->shape()[1]); j++)
 					{
 						tmp = (*data)[i][j];
-						e2 += tmp*tmp;
-						e += tmp;
+						e2 += tmp*tmp/n;
+						e += tmp/n;
 					}
 				}
 				
-				e2 /= n;
-				e /= n;
+				//e2 /= n;
+				//e /= n;
 				value_type sd = sqrt(e2-e*e);
 				
 		//		std::cout << "mean:" << e << std::endl;
@@ -814,7 +814,7 @@ namespace SingleParticle2dx
 			template <typename T> 
 			static value_type calculateSD(boost::multi_array<T, 2ul, std::allocator<T> >* data)
 			{
-				return 1;
+				//return 1;
 				
 				value_type n = data->shape()[0] * data->shape()[1];
 				value_type tmp = 0;
@@ -828,13 +828,13 @@ namespace SingleParticle2dx
 					for(size_type j=0; j < static_cast<size_type>(data->shape()[1]); j++)
 					{
 						tmp = (*data)[i][j];
-						e2 += tmp*tmp;
-						e += tmp;
+						e2 += tmp*tmp / n;
+						e += tmp / n;
 					}
 				}
 				
-				e2 /= n;
-				e /= n;
+				//e2 /= n;
+				//e /= n;
 				
 				value_type aux = e2-e*e;
 				value_type sd;
