@@ -2,15 +2,14 @@
 
 #include <iostream>
 
-//#include <boost/filesystem.hpp>
-//#include <boost/algorithm/minmax_element.hpp>
-//#include <boost/algorithm/string.hpp>
-//#include <boost/algorithm/string/split.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/minmax_element.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/split.hpp>
 
 
-//void eulerWindow::generatePixMap(SingleParticle2dx::DataStructures::Abstract2dData* data, QPixmap& pixmap_h)
-//{
-/*
+void eulerWindow::generatePixMap(SingleParticle2dx::DataStructures::Abstract2dData* data, QPixmap& pixmap_h)
+{
 	QColor color;
 	QSize size_image(300,300);
 	QImage image(size_image, QImage::Format_RGB888);
@@ -51,13 +50,12 @@
 	}
 	
 	pixmap_h.convertFromImage(image);
-	*/
-//}
+}
 
 
 void eulerWindow::setupGUI()
 {
-/*
+
 	show_proj = true;
 	show_grid = true;
 
@@ -265,19 +263,17 @@ void eulerWindow::loadAveContainer(SingleParticle2dx::DataStructures::ParticleCo
 	}
 	
 	cont_ave.sortContainer();
-	*/
 }
 
 
-//void eulerWindow::clearContainer(SingleParticle2dx::DataStructures::ParticleContainer& cont)
-//{
-//	cont.clear();
-//}
+void eulerWindow::clearContainer(SingleParticle2dx::DataStructures::ParticleContainer& cont)
+{
+	cont.clear();
+}
 
 
 int eulerWindow::determineSize()
 {
-	/*
 	QString dir_work = config_gui->getDir("working");
 	std::string cont_bin_folder = container_dir + "/ParticleContainers/cont_part4";
 	std::vector<std::string> folder_content;
@@ -287,7 +283,6 @@ int eulerWindow::determineSize()
 	SingleParticle2dx::DataStructures::ParticleContainer cont;
 	SingleParticle2dx::DataStructures::ParticleContainer::deserializeContainerFromDisk(folder_content[0], cont, true);
 	return cont(0).getSizeX();
-	*/
 	
 	return 0;
 }
@@ -295,18 +290,15 @@ int eulerWindow::determineSize()
 
 void eulerWindow::reloadContainers()
 {
-	/*
 	clearContainer(*cont_ave);
 	loadAveContainer(*cont_ave);
     particleChanged();
 	update();
-	*/
 }
 
   
 void eulerWindow::setupSP2DX()
 {	
-	/*	
 	config_sp = SingleParticle2dx::ConfigContainer::Instance();
 	n = determineSize();
 	
@@ -337,7 +329,6 @@ void eulerWindow::setupSP2DX()
     
     SingleParticle2dx::DataStructures::ParticleContainer cont_dummy;
 	rec3d->forceProjectionPreparation(cont_dummy);
-	*/
 }
 
 
@@ -345,17 +336,17 @@ eulerWindow::eulerWindow(confData* config,QWidget *parent)
  : QWidget(parent),
    config_gui(config)
 {
-	//setContDir();
-	//setupSP2DX();
-	//setupGUI();
-	//particleChanged();
+	setContDir();
+	setupSP2DX();
+	setupGUI();
+	particleChanged();
 }
 
 
 void eulerWindow::setContDir()
 {
-	//QString workingDir = QFileDialog::getExistingDirectory(0, "Select the container to align", config_gui->getDir("working"));
-	//container_dir = workingDir.toStdString();
+	QString workingDir = QFileDialog::getExistingDirectory(0, "Select the container to align", config_gui->getDir("working"));
+	container_dir = workingDir.toStdString();
 }
 
 
@@ -390,7 +381,6 @@ void eulerWindow::keyPressEvent(QKeyEvent *event)
 
 void eulerWindow::saveContainer()
 {
-	/*
 	int r = QMessageBox::warning(this, tr("Confirm save"), tr("Do you realy want to save the alignment?\nNote that this action can not be reverted!"), QMessageBox::Yes | QMessageBox::No);
 	
 	if(r == QMessageBox::Yes )
@@ -415,14 +405,12 @@ void eulerWindow::saveContainer()
 	{
 		return;
 	}
-	*/
 }
 
 
 
 void eulerWindow::showRec()
 {
-	/*
 	SingleParticle2dx::DataStructures::Reconstruction3d rec_tmp(n,n,n);
 	rec_tmp.setBackprojectionMethod(2);
 	rec_tmp.setupForBackProjection();
@@ -443,7 +431,6 @@ void eulerWindow::showRec()
     QProcess *myProcess = new QProcess();
     myProcess->start(program, arguments);
     myProcess->waitForFinished ( 300000000 );
-    */
 }
 
 
@@ -471,7 +458,6 @@ void eulerWindow::changeGrid()
 
 void eulerWindow::selectNextParticle()
 {
-	/*
 	int current_index = particleSelection->currentIndex();
 	if(current_index == (cont_ave->getNumberOfParticles()-1))
 	{
@@ -481,13 +467,11 @@ void eulerWindow::selectNextParticle()
 	{
 		particleSelection->setCurrentIndex(current_index+1);
 	}
-	*/
 }
 
 
 void eulerWindow::selectPrevParticle()
 {
-	/*
 	int current_index = particleSelection->currentIndex();
 	if(current_index == 0)
 	{
@@ -497,13 +481,11 @@ void eulerWindow::selectPrevParticle()
 	{
 		particleSelection->setCurrentIndex(current_index-1);
 	}
-	*/
 }
 
 
 void eulerWindow::particleChanged()
 {
-	/*
 	int current_index = particleSelection->currentIndex();
 		
 	generatePixMap(&((*cont_ave)(current_index)), pixmap_part);
@@ -519,13 +501,11 @@ void eulerWindow::particleChanged()
 	{
 		togglePixmapLabel->setPixmap(pixmap_part);
 	}
-	*/
 }
 
 
 void eulerWindow::deleteParticle()
 {
-	/*
 	int current_index = particleSelection->currentIndex();
 	
 	int r = QMessageBox::warning(this, tr("Confirm delete"), tr("Do you realy want to delete the current particle?\n" "Note that there is no way of getting the particle back expect repicking the container"), QMessageBox::Yes | QMessageBox::No);
@@ -544,25 +524,21 @@ void eulerWindow::deleteParticle()
 	{
 		return;
 	}
-	*/
 }
 
 
 void eulerWindow::resetParticle()
 {
-	/*
 	int current_index = particleSelection->currentIndex();
 	SingleParticle2dx::DataStructures::Orientation o = (*cont_ave)(current_index).getInitialOrientation();
 	taxisSlider->setValue(o.getTLTAXIS());
 	tanglSlider->setValue(o.getTLTANG());
 	taxaSlider->setValue(o.getTAXA());
-	*/
 }
 
 
 void eulerWindow::update()
 {
-	/*
 	int current_index = particleSelection->currentIndex();
 	
 	SingleParticle2dx::DataStructures::Orientation o(taxisSpinBox->value(), tanglSpinBox->value(), taxaSpinBox->value());
@@ -577,5 +553,4 @@ void eulerWindow::update()
 	{
 		togglePixmapLabel->setPixmap(pixmap_proj);
 	}
-	*/
 }

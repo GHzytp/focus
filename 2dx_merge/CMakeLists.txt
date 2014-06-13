@@ -145,28 +145,28 @@ get_propagate_deps(conf widgets mrcImage extentions)
 # luckily FIND_PACKAGE prepared 2DX_MERGE_LIBRARIES variable for us:
 #
 
-#find_package(Boost COMPONENTS serialization system filesystem program_options REQUIRED)
+find_package(Boost COMPONENTS serialization system filesystem program_options REQUIRED)
 
-find_package(Boost COMPONENTS system filesystem REQUIRED)
+#find_package(Boost COMPONENTS system filesystem REQUIRED)
 
 
 target_link_libraries(${EXETITLE} conf widgets mrcImage extentions ${2DX_MERGE_LIBRARIES})
 
-#target_link_libraries(${EXETITLE} ${CMAKE_CURRENT_BINARY_DIR}/../kernel/mrc/source/2dx_single_particle_lib/libSingleParticle2dx.a)
-#target_link_libraries(${EXETITLE} ${CMAKE_CURRENT_BINARY_DIR}/../kernel/mrc/source/2dx_single_particle_lib/eman2/libEM/libEM2.a)
+target_link_libraries(${EXETITLE} ${CMAKE_CURRENT_BINARY_DIR}/../kernel/mrc/source/2dx_single_particle_lib/libSingleParticle2dx.a)
+target_link_libraries(${EXETITLE} ${CMAKE_CURRENT_BINARY_DIR}/../kernel/mrc/source/2dx_single_particle_lib/eman2/libEM/libEM2.a)
 
-#if (ENABLE_CUDA)
-#	target_link_libraries(${EXETITLE} ${CMAKE_CURRENT_BINARY_DIR}/../kernel/mrc/source/2dx_single_particle_lib/libSingleParticleCUDA2dx.a)
-#	target_link_libraries(${EXETITLE} /usr/local/cuda/lib64/libcudart.so.5.5)
-#	target_link_libraries(${EXETITLE} /usr/local/cuda/lib64/libcufft.so)
-#endif(ENABLE_CUDA)
+if (ENABLE_CUDA)
+	target_link_libraries(${EXETITLE} ${CMAKE_CURRENT_BINARY_DIR}/../kernel/mrc/source/2dx_single_particle_lib/libSingleParticleCUDA2dx.a)
+	target_link_libraries(${EXETITLE} /usr/local/cuda/lib64/libcudart.so.5.5)
+	target_link_libraries(${EXETITLE} /usr/local/cuda/lib64/libcufft.so)
+endif(ENABLE_CUDA)
 
-#target_link_libraries(${EXETITLE} ${GSL_LIBRARY})
-#target_link_libraries(${EXETITLE} ${GSL_CBLAS_LIBRARY})
-#target_link_libraries(${EXETITLE} ${TIFF_LIBRARY})
-#target_link_libraries(${EXETITLE} ${HDF5_LIBRARY})
-#target_link_libraries(${EXETITLE} ${PNG_LIBRARY})
-#target_link_libraries(${EXETITLE} ${JPEG_LIBRARY})
+target_link_libraries(${EXETITLE} ${GSL_LIBRARY})
+target_link_libraries(${EXETITLE} ${GSL_CBLAS_LIBRARY})
+target_link_libraries(${EXETITLE} ${TIFF_LIBRARY})
+target_link_libraries(${EXETITLE} ${HDF5_LIBRARY})
+target_link_libraries(${EXETITLE} ${PNG_LIBRARY})
+target_link_libraries(${EXETITLE} ${JPEG_LIBRARY})
 target_link_libraries(${EXETITLE} ${Boost_LIBRARIES})
 
 

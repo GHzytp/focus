@@ -21,7 +21,7 @@
 
 #include "confData.h"
 
-//#include "../kernel/mrc/source/2dx_single_particle_lib/2dxSingleParticle.hpp"
+#include "../kernel/mrc/source/2dx_single_particle_lib/2dxSingleParticle.hpp"
 
 class eulerWindow : public QWidget
 {
@@ -47,15 +47,15 @@ public slots:
     void deleteParticle();
     void reloadContainers();
     
- //   void loadAveContainer(SingleParticle2dx::DataStructures::ParticleContainer& cont_ave);
- //   void clearContainer(SingleParticle2dx::DataStructures::ParticleContainer& cont);
+    void loadAveContainer(SingleParticle2dx::DataStructures::ParticleContainer& cont_ave);
+    void clearContainer(SingleParticle2dx::DataStructures::ParticleContainer& cont);
 
 
 protected:
 	void keyPressEvent(QKeyEvent *event);
 	void setupGUI();
     void setupSP2DX();
-  //  void generatePixMap(SingleParticle2dx::DataStructures::Abstract2dData* data, QPixmap& pixmap);
+    void generatePixMap(SingleParticle2dx::DataStructures::Abstract2dData* data, QPixmap& pixmap);
     int determineSize();
     void setContDir();
 
@@ -105,12 +105,12 @@ private:
 	QPushButton* saveContButton;
 	QPushButton* deletePartButton;
 	
-//	SingleParticle2dx::DataStructures::Reconstruction3d* rec3d;
-//	SingleParticle2dx::ConfigContainer* config_sp;
-//	SingleParticle2dx::DataStructures::Projection2d* proj;
-//	boost::multi_array<float,2>* data_field;
+	SingleParticle2dx::DataStructures::Reconstruction3d* rec3d;
+	SingleParticle2dx::ConfigContainer* config_sp;
+	SingleParticle2dx::DataStructures::Projection2d* proj;
+	boost::multi_array<float,2>* data_field;
 	
-//	SingleParticle2dx::DataStructures::ParticleContainer* cont_ave;
+	SingleParticle2dx::DataStructures::ParticleContainer* cont_ave;
 
 	bool show_proj;
 	bool show_grid;
