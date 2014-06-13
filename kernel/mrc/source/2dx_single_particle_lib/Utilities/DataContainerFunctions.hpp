@@ -413,6 +413,7 @@ namespace SingleParticle2dx
 						{
 							dr = r - r_max;
 							w = exp(-dr * relax_param );
+							w = 0;
 						}
 						else
 						{
@@ -505,59 +506,14 @@ namespace SingleParticle2dx
 				myfile2.close();
 				
 			}
-			
 		
-			/**
-			 *  @brief      Normalize realspace data container
-			 *  @details    Generic function to normalize an entire boost_mutli_array of any dimension
-			 *  @param[in]  data Array to normalize
-			 *  @post       data set normalized to zero mean and standard deviation one
-			 *  @note       Throws an exception if the standard deviation is too small
-			 */
-		/*
-    		template <typename T>
-    		static void normalizeRealSpaceData(T* data)
-    		{				
-    			using namespace boost::lambda;
-    			value_type mean_value;
-    			value_type sd;
-    			value_type n = data->num_elements();
-    		
-				boost::accumulators::accumulator_set<value_type, boost::accumulators::stats<boost::accumulators::tag::mean, boost::accumulators::tag::variance(boost::accumulators::lazy)> > acc;
-				
-				for (typename T::iterator it = data->begin() ; it != data->end(); ++it)
-				{
-					acc(*((*it).origin()));
-				}
-				
-				mean_value = boost::accumulators::extract_result<boost::accumulators::tag::mean>(acc);
-				sd = sqrt(fabs(boost::accumulators::extract_result<boost::accumulators::tag::variance>(acc)));
-				
-				#ifdef USE_CILK
-					(data->origin())[0:data->num_elements()] = ((data->origin())[0:data->num_elements()] - mean_value)/sd  ;
-				#else
-					std::for_each(data->origin(), data->origin() + data->num_elements(), _1=(_1-mean_value)/sd);
-				#endif	
-    		}
-	*/
-  
-  
 			template <typename T> 
 			static void normalizeRealSpaceData(boost::multi_array<T, 2ul, std::allocator<T> >* data)
 			{	
-				//return;
-					
 				value_type n = data->shape()[0] * data->shape()[1];
 				value_type tmp;
 				value_type e2 = 0;
 				value_type e = 0;
-				
-		//		std::cout << "test_out: " << (*data)[10][10] << std::endl;
-				
-		//		for(size_type i=0; i<(static_cast<size_type>(data->shape()[0]) * static_cast<size_type>(data->shape()[1])); i++)
-			//	{
-					
-			//	} 
 				
 				for(size_type i=0; i < static_cast<size_type>(data->shape()[0]); i++)
 				{
@@ -576,16 +532,7 @@ namespace SingleParticle2dx
 					}
 				}
 				
-				//e2 /= n;
-				//e /= n;
 				value_type sd = sqrt(e2);
-				
-		//		std::cout << "mean:" << e << std::endl;
-		//		std::cout << "mean2:" << e2 << std::endl;
-		//		std::cout << "test2:" << e2-e*e << std::endl;
-		//		std::cout << "sd:" << sd << std::endl;
-		
-				//sd = 1;
 				
 				for(size_type i=0; i < static_cast<size_type>(data->shape()[0]); i++)
 				{
@@ -594,7 +541,6 @@ namespace SingleParticle2dx
 						(*data)[i][j] = ((*data)[i][j] - e) / sd;
 					}
 				}
-				
 			}
 			
 			
@@ -632,74 +578,6 @@ namespace SingleParticle2dx
 					}
 				}
 			}
-			
-		
-	/*		
-			template <typename T> 
-			static void normalizeRealSpaceData(boost::multi_array<T, 2ul, std::allocator<T> >* data)
-			{
-				value_type n = data->shape()[0];
-				value_type r;
-				value_type r_max = SingleParticle2dx::ConfigContainer::Instance()->getParticleMaskingRadius();
-				value_type e = 0;
-				value_type e2 = 0;
-				size_type ne = 0;
-				
-				for(size_type i=0; i < static_cast<size_type>(data->shape()[0]); i++)
-				{
-					for(size_type j=0; j < static_cast<size_type>(data->shape()[1]); j++)
-					{
-						r = sqrt((i-n/2)*(i-n/2) + (j-n/2)*(j-n/2));
-						if ( r > r_max )
-						{
-							e += (*data)[i][j];
-							e2 += (*data)[i][j] * (*data)[i][j];
-							ne++;
-						}
-					}
-				}
-				
-				e /= ne;
-				e2 /= ne;
-				value_type var = e2 - e*e;
-				
-				if (fabs(var) < 1e-5)
-				{
-					std::cerr << "sd too small" << std::endl;
-					throw std::runtime_error("Bad operation");
-				}
-				
-				for(size_type i=0; i < static_cast<size_type>(data->shape()[0]); i++)
-				{
-					for(size_type j=0; j < static_cast<size_type>(data->shape()[1]); j++)
-					{
-						(*data)[i][j] = ((*data)[i][j] - e) / sqrt(var);
-					}
-				}
-			}
-			
-			
-			template <typename T> 
-			static void normalizeRealSpaceData(boost::multi_array<T, 3ul, std::allocator<T> >* data)
-			{
-				using namespace boost::lambda;
-				value_type mean_value = value_type(0);
-				value_type mean_value2 = value_type(0);
-				size_type n = data->num_elements();
-
-				// calc mean value and squared mean value by means of a bosst lambda function
-				std::for_each(data->origin(), data->origin() + data->num_elements(), (mean_value+=_1/n) && (mean_value2+=(_1*_1)/n) );
-				value_type sd = sqrt( mean_value2 - mean_value*mean_value );
-
-				if (fabs(sd) < 1e-10)
-				{
-					sd = 1.0;
-				}
-				
-				// normalization loop based on a boost lambda function
-				std::for_each(data->origin(), data->origin() + data->num_elements(), _1=(_1-mean_value)/sd);
-			}
-		*/	
 			
 			template <typename T>
 			static void devideBySqrtAv(T* data)
@@ -804,27 +682,10 @@ namespace SingleParticle2dx
 				return mean_value;
 			}
 
-
-	//   	template <typename T>
-	//   	static value_type calculateSD(T* data)
-	//   	{
-	//   		using namespace boost::lambda;
-	//   		value_type mean_value = value_type(0);
-	//   		value_type mean_value2 = value_type(0);
-	//   		size_type n = data->num_elements();
-	//   		
-	//   		// calc mean value and squared mean value by means of a bosst lambda function
-	//   		std::for_each(data->origin(), data->origin() + data->num_elements(), (mean_value+=_1/n) && (mean_value2+=(_1*_1)/n) );
-	//   		value_type sd = sqrt( mean_value2 - mean_value*mean_value );
-	//   		return sd;	
-	//   	}
-			
 			
 			template <typename T> 
 			static value_type calculateSD(boost::multi_array<T, 2ul, std::allocator<T> >* data)
 			{
-				//return 1;
-				
 				value_type n = data->shape()[0] * data->shape()[1];
 				value_type tmp = 0;
 				value_type e2 = 0;
@@ -966,7 +827,10 @@ namespace SingleParticle2dx
 				ctf_part.setDefocus(difmid1/10000.0);
 				ctf_part.setCs(ctf_params.m_cs);
 				ctf_part.setVoltage(ctf_params.m_kv);
+				
+				// TODO Read value from config file
 				ctf_part.setApix(1.34);
+				
 				ctf_part.setAmpCon(0.1);
 				ctf_part.setBfactor(0);
 				ctf_part.setAst(0);
@@ -995,7 +859,6 @@ namespace SingleParticle2dx
 				value_type rad, angle, angspt, c1, c2, angdif, c_cos, df, chi;
 				size_type j;
 				
-				//#pragma omp parallel for private(rad, angle, angspt, c1, c2, angdif, c_cos, df, chi, j)
 				for (size_type i=0; i<n; i++)
 				{
 					for(j=0; j<n; j++)
@@ -1021,7 +884,6 @@ namespace SingleParticle2dx
 					}
 				}
 
-				//#pragma omp parallel for private(j)
 				for (size_type i=0; i<n; i++)
 				{
 					for(j=0; j<n; j++)

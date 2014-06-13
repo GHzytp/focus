@@ -511,7 +511,7 @@ SingleParticle2dx::DataStructures::ParticleContainer::size_type SingleParticle2d
 	}
 		
 	std::vector<value_type> lattice_rec(4,0);
-	lattice_rec[0] = image_config.getConfigElement("selattice")[0];
+	lattice_rec[0] = image_config.getConfigElement("lattice")[0];
 	lattice_rec[1] = image_config.getConfigElement("lattice")[1];
 	lattice_rec[2] = image_config.getConfigElement("lattice")[2];
 	lattice_rec[3] = image_config.getConfigElement("lattice")[3];
@@ -618,7 +618,8 @@ SingleParticle2dx::DataStructures::ParticleContainer::size_type SingleParticle2d
 	
 	size_type mag = image_config.getConfigElement("magnification")[0];
 	value_type scaling_ratio = mag / config->getMaxMag();
-	scaling_ratio = 1;
+	scaling_ratio = 1/1.34;
+	//scaling_ratio = 1;
 	
 	SingleParticle2dx::Utilities::UtilityFunctions::generate2dxOutput("scaling factor: " + SingleParticle2dx::Utilities::StringFunctions::TtoString(scaling_ratio), 3);
 	SingleParticle2dx::Utilities::DataContainerFunctions::normalizeRealSpaceData(&mrc_input);
@@ -710,8 +711,8 @@ SingleParticle2dx::DataStructures::ParticleContainer::size_type SingleParticle2d
 		}
 		else if ( sd_part < (0.02 * sd_image) )
 		{
-			dia.addTooLowRelativeSdParticle();
-			local_dia.addTooLowRelativeSdParticle();
+			//dia.addTooLowRelativeSdParticle();
+			//local_dia.addTooLowRelativeSdParticle();
 		}
 		else
 		{
@@ -799,8 +800,8 @@ SingleParticle2dx::DataStructures::ParticleContainer::size_type SingleParticle2d
 				}
 			}
 
-			part.applyHighPassFilter();
 			part.scale(scaling_ratio);
+			part.applyHighPassFilter();
 			
 			if (config->getEqualizeHistograms())
 			{

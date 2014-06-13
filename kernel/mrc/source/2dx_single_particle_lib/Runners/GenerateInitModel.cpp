@@ -44,6 +44,7 @@ int main ()
 	
 	if(config->getShowSights())
 	{	
+		std::cout << "I have to show the sights" << std::endl;
 		proj1.setMidddleTarget();
 		proj2.setMidddleTarget();
 		proj3.setMidddleTarget();
