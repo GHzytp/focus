@@ -16,9 +16,9 @@ endif(CPPUNIT_FOUND)
 find_program(HOSTNAME_CMD NAMES hostname)
 exec_program(${HOSTNAME_CMD} ARGS OUTPUT_VARIABLE HOSTNAME)
 
-if(APPLE)
-set(Boost_USE_STATIC_LIBS true)
-endif(APPLE)
+#if(APPLE)
+#set(Boost_USE_STATIC_LIBS true)
+#endif(APPLE)
 
 find_package(Boost COMPONENTS serialization system filesystem program_options REQUIRED)
 

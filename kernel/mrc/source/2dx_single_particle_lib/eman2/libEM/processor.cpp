@@ -8235,8 +8235,8 @@ void WaveletProcessor::process_inplace(EMData *image)
 
 	int K=(int)params["ord"];
 	gsl_wavelet_direction dir;
-	if ((int)params["dir"]==1) dir=forward;
-	else dir=backward;
+//	if ((int)params["dir"]==1) dir=forward;
+//	else dir=backward;
 
 	gsl_wavelet *w = gsl_wavelet_alloc(T, K);
 	gsl_wavelet_workspace *work = gsl_wavelet_workspace_alloc(nx);

@@ -19,6 +19,9 @@ endif(CMAKE_CXX_COMPILER STREQUAL "/opt/intel/composer_xe_2013.2.146/bin/intel64
 
 file(GLOB CPP_SOURCE_SP *.cpp)
 
+
+
+
 foreach(i ${CPP_SOURCE_SP})
 	get_filename_component(EXECUTABLE ${i}  NAME_WE)
 	add_executable(${EXECUTABLE} ${i})
@@ -51,6 +54,7 @@ foreach(i ${CPP_SOURCE_SP})
 		target_link_libraries(${EXECUTABLE} /home/phil2/scherers/libs/boost_1_52/lib/libboost_program_options.so)
 	else()
 		target_link_libraries(${EXECUTABLE} ${Boost_LIBRARIES})
+		#message(${Boost_LIBRARIES})
 	endif()
 	
 	#linking for eman2 lib (libEM2.a)
