@@ -23,9 +23,9 @@ include(SetPropagateDeps)
 #-- PROJECT Configurations ----------------------------------------------------
 # 
 PROJECT(2dx)
-set (2dx_VERSION_MAJOR 3)
-set (2dx_VERSION_MINOR 5)
-set (2dx_VERSION_PATCH 1)
+set (2dx_VERSION_MAJOR 4)
+set (2dx_VERSION_MINOR 0)
+set (2dx_VERSION_PATCH 0)
 #------------------------------------------------------------------------------
 
 
@@ -103,6 +103,7 @@ install(FILES ${HTM} DESTINATION .)
 add_subdirectory(external)
 add_subdirectory(kernel)
 add_subdirectory(lib)
+add_subdirectory(app)
 add_subdirectory(2dx_image)
 add_subdirectory(2dx_merge)
 add_subdirectory(2dx_logbrowser)
