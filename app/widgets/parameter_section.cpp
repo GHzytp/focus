@@ -16,30 +16,30 @@ ParameterSectionWidget::ParameterSectionWidget(QString sectionTitle, data::Param
     mainLayout_ = new QVBoxLayout;
     mainLayout_->setSpacing(10);
     mainLayout_->setMargin(10);
-    
+
     QLabel* title = new QLabel(sectionTitle);
     title->setAlignment(Qt::AlignLeft);
-    
+
     QFont f = title->font();
     f.setCapitalization(QFont::Capitalize);
     f.setBold(true);
     title->setFont(f);
     QPalette pal = title->palette();
-    pal.setColor(QPalette::WindowText,QColor(31,92,207));
+    pal.setColor(QPalette::WindowText, QColor(31, 92, 207));
     title->setPalette(pal);
     mainLayout_->addWidget(title);
-    
+
     parameterFrame_ = new QFrame(this);
     parameterFrame_->setFrameShadow(QFrame::Plain);
     parameterFrame_->setFrameShape(QFrame::StyledPanel);
-    
+
     formLayout_ = new QFormLayout();
     formLayout_->setRowWrapPolicy(QFormLayout::WrapLongRows);
     formLayout_->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     formLayout_->setFormAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     formLayout_->setLabelAlignment(Qt::AlignLeft);
     formLayout_->setVerticalSpacing(0);
-    
+
     setAutoFillBackground(true);
 }
 
@@ -49,107 +49,60 @@ void ParameterSectionWidget::addParameter(const QString& parameterName) {
     parameterInputLookup_.insert(parameterName, inputWidget);
     data::Parameter paramModel(parameterName, context_);
     formLayout_->addRow(paramModel.property("label"), inputWidget);
-    if(paramModel.property("userlevel").toLower().trimmed() == "advanced") {
-        QWidget* label = formLayout_->labelForField(inputWidget);
+    QWidget* label = formLayout_->labelForField(inputWidget);
+    label->setToolTip(getWhatsThis(parameterName));
+    if (paramModel.property("userlevel").toLower().trimmed() == "advanced") {
         QFont f = label->font();
         f.setItalic(true);
         label->setFont(f);
     }
 }
 
-void ParameterSectionWidget::loadValues() {
+void ParameterSectionWidget::loadFromConfig() {
     QString parameterName;
+
     foreach(parameterName, parameterInputLookup_.keys()) {
-        QString val = data::Parameter(parameterName, context_).value().toString();
-        parameterInputLookup_[parameterName]->loadValue(val);
+        parameterInputLookup_[parameterName]->loadFromConfig();
     }
 }
 
 void ParameterSectionWidget::finishAddingParameters() {
     parameterFrame_->setLayout(formLayout_);
     mainLayout_->addWidget(parameterFrame_);
-    mainLayout_->addSpacing(20);
+    mainLayout_->addSpacing(10);
     setLayout(mainLayout_);
 }
 
-/*
-void ParameterSectionWidget::updateWhatsThis() {
-    data::Parameter param = parameter();
-    QString whatsthis = name_ + "<br><br>" + param.property("legend") + "<br><br>";
-    bool minDefined = false, maxDefined = false;
-    minDefined = param.property("type").contains("min", Qt::CaseInsensitive);
-    maxDefined = param.property("type").contains("max", Qt::CaseInsensitive);
-    if (minDefined || maxDefined) {
-        QString type = param.property("type");
-        type.replace(QRegExp("^.*\"(.*)\".*$"), "\\1");
-        QStringList fields = type.split(';');
-        QString minimum, maximum;
-        QMap<int, QStringList> minMaxPairs;
-        minDefined = false;
-        maxDefined = false;
-        bool currentMaxDefined, currentMinDefined;
-        int k = 0;
+QString ParameterSectionWidget::getWhatsThis(QString parameterName) {
+    data::Parameter param(parameterName, context_);
+    QString whatsthis = parameterName + "<br><br>" + param.property("legend") + "<br>";
 
-        foreach(QString field, fields) {
-            if (minDefined && field.contains("min", Qt::CaseInsensitive)) {
-                k++;
-                minDefined = false;
-                maxDefined = false;
-            }
-            if (maxDefined && field.contains("max", Qt::CaseInsensitive)) {
-                k++;
-                minDefined = false;
-                maxDefined = false;
-            }
-            currentMaxDefined = field.contains("max", Qt::CaseInsensitive);
-            currentMinDefined = field.contains("min", Qt::CaseInsensitive);
+    data::Parameter::TypeInfo info = param.typeInfo();
+    QMap<int, QStringList> widgetRange = info.deduceMinMaxPairs(info.properties);
 
-            if (currentMinDefined) {
-                minMaxPairs[k].insert(0, field.section('=', -1, -1).trimmed());
-                minDefined = true;
-            }
-            if (currentMaxDefined) {
-                minMaxPairs[k].insert(1, field.section('=', -1, -1).trimmed());
-                maxDefined = true;
-            }
+    if(!widgetRange.isEmpty()) whatsthis += "Range: <br>";
+    foreach(int i, widgetRange.keys()) {
+        if(widgetRange.size() >1) {
+            whatsthis += QString::number(i+1) + " : ";
         }
-
-        QMapIterator<int, QStringList> it(minMaxPairs);
-
-        whatsthis += "Range";
-        if (minMaxPairs.size() > 1) whatsthis += "s: <br>";
-        else whatsthis += ": ";
-
-        foreach(QStringList p, minMaxPairs)
-        while (it.hasNext()) {
-            it.next();
-            if (minMaxPairs.size() > 1) whatsthis += QString::number(it.key() + 1) + ": ";
-            QStringList p = it.value();
-            maxDefined = false;
-            minDefined = false;
-            if (p.size() > 0) minDefined = !p[0].isEmpty();
-            if (p.size() > 1) maxDefined = !p[1].isEmpty();
-
-            if (minDefined) {
-                if (!maxDefined) whatsthis += " Min=";
-                whatsthis += p[0];
-            }
-            if (maxDefined) {
-                if (!minDefined) whatsthis += "Max=";
-                else whatsthis += " to ";
-                whatsthis += p[1];
-            }
-            whatsthis += "<br>";
+        if (!widgetRange.value(i)[0].isEmpty()) {
+            whatsthis += " Min=";
+            whatsthis += widgetRange.value(i)[0];
+        }
+        if (widgetRange.value(i).size() > 1 && !widgetRange.value(i)[1].isEmpty()) {
+            whatsthis += " and ";
+            whatsthis += " Max=";
+            whatsthis += widgetRange.value(i)[1];
+            whatsthis += " ";
         }
         whatsthis += "<br>";
     }
-    
     whatsthis += "Example: " + param.property("example") + "<br><br>";
     whatsthis += "<a href=\"" + param.property("help") + "\"> " + param.property("help") + "</a>";
-    setWhatsThis(whatsthis);
+
+    return whatsthis;
 
 }
-*/
 
 
 

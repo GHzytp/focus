@@ -105,7 +105,7 @@ set(MOC_HDRS
         widgets/edit_set_widget.hpp
         widgets/graphical_button.hpp
         widgets/library_widget.hpp
-        widgets/parameter_row.hpp
+        widgets/parameter_input.hpp
         widgets/parameter_section.hpp
         widgets/parameters_widget.hpp
         widgets/yesno_widget.hpp

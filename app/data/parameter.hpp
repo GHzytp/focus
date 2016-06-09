@@ -100,19 +100,55 @@ namespace tdx {
                         }
                     }
 
+                    static QMap<int, QStringList> deduceMinMaxPairs(QStringList fields) {
+                        QMap<int, QStringList> minMaxPairs;
+                        bool minDefined = false;
+                        bool maxDefined = false;
+                        bool currentMaxDefined, currentMinDefined;
+                        int k = 0;
+
+                        foreach(QString field, fields) {
+                            if (minDefined && field.contains("min", Qt::CaseInsensitive)) {
+                                k++;
+                                minDefined = false;
+                                maxDefined = false;
+                            }
+                            if (maxDefined && field.contains("max", Qt::CaseInsensitive)) {
+                                k++;
+                                minDefined = false;
+                                maxDefined = false;
+                            }
+                            currentMaxDefined = field.contains("max", Qt::CaseInsensitive);
+                            currentMinDefined = field.contains("min", Qt::CaseInsensitive);
+
+                            if (currentMinDefined) {
+                                minMaxPairs[k].insert(0, field.section('=', -1, -1).trimmed());
+                                minDefined = true;
+                            }
+                            if (currentMaxDefined) {
+                                minMaxPairs[k].insert(1, field.section('=', -1, -1).trimmed());
+                                maxDefined = true;
+                            }
+                        }
+                        
+                        return minMaxPairs;
+                    }
+
                 };
 
                 class ConfigContext {
                 public:
-                    ConfigContext(QStringList levels = QStringList()) 
-                    : levels_(levels) {}
-                    
+
+                    ConfigContext(QStringList levels = QStringList())
+                    : levels_(levels) {
+                    }
+
                     QStringList levels() {
                         return levels_;
                     }
-                    
+
                     QString levelAt(int i) {
-                        if(i < levels_.size()) return levels_[i];
+                        if (i < levels_.size()) return levels_[i];
                         else return QString();
                     }
 
@@ -154,14 +190,14 @@ namespace tdx {
                 QString property(const QString& prop) {
                     //Check for the changable properties
                     //if not return global otherwise return at correct config location
-                    if (prop == "iswrong" || prop == "locked") {
-                        ConfigLevel configFileLevel_ = resetConfigFileLevel();
-                        if (configFileLevel_ == ConfigLevel::GLOBAL) {
+                    if (prop == "value" || prop == "iswrong" || prop == "locked") {
+                        ConfigLevel configFileLevel = getConfigFileLevel(prop);
+                        if (configFileLevel == ConfigLevel::GLOBAL) {
                             return globalProperty(prop);
                         } else {
                             conf::ProjectParameterConfiguration paramConfig;
                             paramConfig.setCurrentParameter(name_);
-                            for (int i = 1; i <= static_cast<int> (configFileLevel_); ++i) { 
+                            for (int i = 1; i <= static_cast<int> (configFileLevel); ++i) {
                                 paramConfig.beginGroup(context_.levelAt(i--));
                             }
                             return paramConfig.currentParameterProperty(prop);
@@ -172,7 +208,7 @@ namespace tdx {
                 }
 
                 void setProperty(const QString& prop, const QString& val) {
-                    if (prop == "iswrong" || prop == "locked") {
+                    if (prop == "value" || prop == "iswrong" || prop == "locked") {
                         if (property(prop).toLower() != val.toLower()) {
                             conf::ProjectParameterConfiguration paramConfig;
                             QString level;
@@ -184,55 +220,45 @@ namespace tdx {
                 }
 
                 QVariant value() {
-                    ConfigLevel configFileLevel_ = resetConfigFileLevel();
-
-                    if (configFileLevel_ == ConfigLevel::GLOBAL) {
-                        conf::GlobalParameterConfiguration globalConfig;
-                        globalConfig.setCurrentParameter(name_);
-                        return globalConfig.currentParameterValue();
-                    } else {
-                        conf::ProjectParameterConfiguration paramConfig;
-                        paramConfig.setCurrentParameter(name_);
-                        for (int i = 1; i <= static_cast<int> (configFileLevel_); ++i) {
-                            paramConfig.beginGroup(context_.levelAt(i--));
-                        }
-                        return paramConfig.currentParameterValue();
-                    }
-
+                    return QVariant(property("value"));
                 }
 
                 void setValue(const QVariant& val) {
-                    if (value() != val) {
-                        conf::ProjectParameterConfiguration paramConfig;
-                        QString level;
-                        foreach(level, context_.levels()) paramConfig.beginGroup(level);
-                        paramConfig.setCurrentParameter(name_);
-                        paramConfig.setCurrentParameterValue(val);
-                    }
+                    setProperty("value", val.toString());
                 }
 
-                bool isLocked() {
-                    QString locked = property("locked");
-                    if (locked.toLower() == "yes") return true;
-                    else return false;
+                bool locked() {
+                    bool yup = false;
+                    if (property("locked").trimmed().toLower() == "yes") yup = true;
+                    return yup;
                 };
 
                 void setLock(bool lock) {
-                    QString locked = "no";
-                    if (lock) locked = "yes";
-                    setProperty("locked", locked);
+                    if (lock) setProperty("locked", "yes");
+                    else setProperty("locked", "no");
                 };
+
+                bool isWrong() {
+                    bool yup = false;
+                    if (property("iswrong").trimmed().toLower() == "yes") yup = true;
+                    return yup;
+                }
+
+                void setIsWrong(bool iswrong) {
+                    if (iswrong) setProperty("iswrong", "yes");
+                    else setProperty("iswrong", "no");
+                }
 
 
             private:
 
-                ConfigLevel resetConfigFileLevel() {
+                ConfigLevel getConfigFileLevel(const QString& prop) {
                     conf::ProjectParameterConfiguration paramConfig;
                     QString level;
                     foreach(level, context_.levels()) paramConfig.beginGroup(level);
                     paramConfig.setCurrentParameter(name_);
                     int configLevel = context_.levels().size();
-                    while (configLevel >= 0 && !paramConfig.currentParameterExists()) {
+                    while (configLevel >= 0 && !paramConfig.currentParameterPropertyExists(prop)) {
                         if (configLevel != 0) paramConfig.endGroup();
                         configLevel--;
                     }

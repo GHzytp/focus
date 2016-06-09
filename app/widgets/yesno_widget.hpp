@@ -70,7 +70,8 @@ namespace tdx {
                 }
                 
                 void setValue(bool value) {
-                    if(value) yes->setChecked(value);
+                    if(value) yes->setChecked(true);
+                    else no->setChecked(true);
                 }
 
             signals:

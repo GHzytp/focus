@@ -12,7 +12,7 @@
 
 #include "data/parameter.hpp"
 
-#include "parameter_row.hpp"
+#include "parameter_input.hpp"
 
 namespace tdx {
 
@@ -28,11 +28,13 @@ namespace tdx {
                 void finishAddingParameters();
                 
             public slots:
-                void loadValues();
+                void loadFromConfig();
                 void addParameter(const QString& parameter);
                 
 
             private:
+                
+                QString getWhatsThis(QString parameterName);
                 
                 data::Parameter::ConfigContext context_;
                 QMap<QString, ParameterInputWidget*> parameterInputLookup_;

@@ -8,6 +8,10 @@
 #include <QHBoxLayout>
 #include <QString>
 #include <QStringList>
+#include <QValidator>
+#include <QIntValidator>
+#include <QDoubleValidator>
+#include <QPair>
 
 namespace tdx {
 
@@ -36,6 +40,10 @@ namespace tdx {
                     
                     setLayout(layout);
                 }
+                
+                QList<QLineEdit*> widgets() {
+                    return widgets_;
+                }
 
             public slots:
 
@@ -62,6 +70,54 @@ namespace tdx {
             private:
                 QList<QLineEdit*> widgets_;
 
+            };
+            
+            class EditIntSetWidget : public EditSetWidget {
+                
+            public:
+                EditIntSetWidget(int count = 1, QWidget* parent = NULL)
+                : EditSetWidget(count, parent) {        
+                    QLineEdit* member;
+                    foreach(member, widgets()) {
+                        member->setValidator(new QIntValidator());
+                    }
+                }
+                
+                void setRange(QMap<int, QStringList> widgetRange) {
+                    foreach(int i, widgetRange.keys()) {
+                        if(i < widgets().size()) {
+                            QIntValidator* validator = new QIntValidator();
+                            if(!widgetRange.value(i)[0].isEmpty()) validator->setBottom(widgetRange.value(i)[0].toInt());
+                            if(widgetRange.value(i).size() > 1 && !widgetRange.value(i)[1].isEmpty()) validator->setTop(widgetRange.value(i)[1].toInt());
+                            widgets()[i]->setValidator(validator);
+                        }
+                    }
+                }
+                
+            };
+            
+            class EditDoubleSetWidget : public EditSetWidget {
+                
+            public:
+                EditDoubleSetWidget(int count = 1, QWidget* parent = NULL)
+                : EditSetWidget(count, parent) {        
+                    QLineEdit* member;
+                    foreach(member, widgets()) {
+                        member->setValidator(new QDoubleValidator());
+                    }
+                }
+                
+                void setRange(QMap<int, QStringList> widgetRange) {
+                    foreach(int i, widgetRange.keys()) {
+                        if(i < widgets().size()) {
+                            QDoubleValidator* validator = new QDoubleValidator();
+                            if(!widgetRange.value(i)[0].isEmpty()) validator->setBottom(widgetRange.value(i)[0].toDouble());
+                            if(widgetRange.value(i).size() > 1 && !widgetRange.value(i)[1].isEmpty()) validator->setTop(widgetRange.value(i)[1].toDouble());
+                            widgets()[i]->setValidator(validator);
+                        }
+                    }
+                }
+                
             };
         }
     }

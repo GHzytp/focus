@@ -20,9 +20,7 @@ void OldConfigPorter::portConfigFile(QString sourceOldConfigFile, QString destin
 
     QStringList valueSearch;
     valueSearch << "LABEL" << "LEGEND" << "EXAMPLE" << "HELP" << "TYPE"
-            << "RELATION" << "LOCKED" << "USERLEVEL"
-            << "INHERITABLE_UPON_INIT" << "SYNC_WITH_UPPER_LEVEL"
-            << "ISWRONG";
+            << "RELATION" << "LOCKED" << "USERLEVEL" << "ISWRONG";
 
     if (!data.open(QIODevice::ReadOnly | QIODevice::Text)) {
         std::cerr << "The old config file could not be located. Tried in:\n\t" << data.fileName().toStdString() << "\n";
@@ -65,7 +63,7 @@ void OldConfigPorter::portConfigFile(QString sourceOldConfigFile, QString destin
                 val[1] = val[1].simplified();
 
                 newConfig.setCurrentParameter(val[0]);
-                newConfig.setCurrentParameterValue(val[1]);
+                newConfig.setCurrentParameterProperty("value", val[1]);
                 newConfig.setCurrentParameterProperty("section", currSection);
                 QString prop;
 

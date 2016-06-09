@@ -34,17 +34,12 @@ namespace tdx {
                     currParameter_ = param;
                 }
                 
-                QStringList parameters() {
-                    beginGroup("parameters");
-                    QStringList pars = childKeys();
-                    endGroup();
-                    return pars;
-                }
-                
-                bool currentParameterExists() {
+                bool currentParameterPropertyExists(const QString& prop) {
                     bool yup = false;
                     beginGroup("parameters");
-                    if(contains(currParameter_)) yup = true;
+                    beginGroup(currParameter_);
+                    if(contains(prop)) yup = true;
+                    endGroup();
                     endGroup();
                     return yup;
                 }
@@ -56,19 +51,6 @@ namespace tdx {
                     endGroup();
                     endGroup();
                     return val;
-                }
-                
-                QVariant currentParameterValue() {
-                    beginGroup("parameters");
-                    QVariant val = value(currParameter_);
-                    endGroup();
-                    return val;
-                }
-                
-                void setCurrentParameterValue(const QVariant& val) {
-                    beginGroup("parameters");
-                    setValue(currParameter_, val);
-                    endGroup();
                 }
                 
                 void setCurrentParameterProperty(const QString& prop, const QString& val) {
@@ -93,6 +75,13 @@ namespace tdx {
                 void syncGlobalParameters() {
                     OldConfigPorter::portConfigFile(repo::PathRepo::configDir().absolutePath() + "/2dx_master.cfg",
                                                     repo::PathRepo::globalParametersConfFile());
+                }
+                
+                QStringList parameters() {
+                    beginGroup("parameters");
+                    QStringList pars = childGroups();
+                    endGroup();
+                    return pars;
                 }
                 
             };

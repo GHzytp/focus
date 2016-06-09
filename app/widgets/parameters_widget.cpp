@@ -143,7 +143,7 @@ QWidget* ParametersWidget::formWidget() {
 
     foreach(section, sectionWidgetLookup_.keys()) {
         sectionWidgetLookup_[section]->finishAddingParameters();
-        sectionWidgetLookup_[section]->loadValues();
+        sectionWidgetLookup_[section]->loadFromConfig();
         generalLayout->addWidget(sectionWidgetLookup_[section]);
     }
 

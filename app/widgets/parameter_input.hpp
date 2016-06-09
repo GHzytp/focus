@@ -27,8 +27,10 @@ namespace tdx {
                 ParameterInputWidget(const QString& parameterName, data::Parameter::ConfigContext context, QWidget *parent = NULL);
                 
             public slots:
-                void loadValue(const QString& value);
+                void loadFromConfig();
                 void saveValue(const QString& value);
+                void saveLockState(bool lock);
+                
 
             signals:
                 void shouldLoadValue(const QString& value);
@@ -41,6 +43,8 @@ namespace tdx {
                 QWidget* setupDropDownWidget();
 
                 QGridLayout* layout_;
+                GraphicalButton* lockButton_;
+                QWidget* inputWidget_;
                 
                 QString parameterName_;
                 data::Parameter::ConfigContext context_;
