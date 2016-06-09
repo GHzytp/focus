@@ -2,6 +2,8 @@
 #include <iostream>
 
 #include <QFont>
+#include <QPalette>
+#include <QColor>
 
 #include "parameter_section.hpp"
 #include "repositories/icon_repo.hpp"
@@ -12,26 +14,33 @@ ParameterSectionWidget::ParameterSectionWidget(QString sectionTitle, data::Param
 : QWidget(parent), context_(context) {
 
     mainLayout_ = new QVBoxLayout;
-    mainLayout_->addSpacing(10);
-    mainLayout_->setSpacing(0);
-    mainLayout_->setMargin(0);
+    mainLayout_->setSpacing(10);
+    mainLayout_->setMargin(10);
     
     QLabel* title = new QLabel(sectionTitle);
-    title->setAlignment(Qt::AlignCenter);
+    title->setAlignment(Qt::AlignLeft);
+    
     QFont f = title->font();
-    f.setCapitalization(QFont::SmallCaps);
+    f.setCapitalization(QFont::Capitalize);
     f.setBold(true);
     title->setFont(f);
-    mainLayout_->addWidget(title, Qt::AlignCenter);
+    QPalette pal = title->palette();
+    pal.setColor(QPalette::WindowText,QColor(31,92,207));
+    title->setPalette(pal);
+    mainLayout_->addWidget(title);
     
-    groupBox_ = new QGroupBox(this);
-    setAutoFillBackground(true);
+    parameterFrame_ = new QFrame(this);
+    parameterFrame_->setFrameShadow(QFrame::Plain);
+    parameterFrame_->setFrameShape(QFrame::StyledPanel);
+    
     formLayout_ = new QFormLayout();
     formLayout_->setRowWrapPolicy(QFormLayout::WrapLongRows);
     formLayout_->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     formLayout_->setFormAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     formLayout_->setLabelAlignment(Qt::AlignLeft);
     formLayout_->setVerticalSpacing(0);
+    
+    setAutoFillBackground(true);
 }
 
 void ParameterSectionWidget::addParameter(const QString& parameterName) {
@@ -40,6 +49,12 @@ void ParameterSectionWidget::addParameter(const QString& parameterName) {
     parameterInputLookup_.insert(parameterName, inputWidget);
     data::Parameter paramModel(parameterName, context_);
     formLayout_->addRow(paramModel.property("label"), inputWidget);
+    if(paramModel.property("userlevel").toLower().trimmed() == "advanced") {
+        QWidget* label = formLayout_->labelForField(inputWidget);
+        QFont f = label->font();
+        f.setItalic(true);
+        label->setFont(f);
+    }
 }
 
 void ParameterSectionWidget::loadValues() {
@@ -51,8 +66,8 @@ void ParameterSectionWidget::loadValues() {
 }
 
 void ParameterSectionWidget::finishAddingParameters() {
-    groupBox_->setLayout(formLayout_);
-    mainLayout_->addWidget(groupBox_);
+    parameterFrame_->setLayout(formLayout_);
+    mainLayout_->addWidget(parameterFrame_);
     mainLayout_->addSpacing(20);
     setLayout(mainLayout_);
 }

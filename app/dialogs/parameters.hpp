@@ -3,7 +3,6 @@
 #define PARAMETERS_DIALOG_HPP
 
 #include <QDialog>
-#include <QScrollArea>
 #include <QGridLayout>
 
 #include "widgets/parameters_widget.hpp"
@@ -21,19 +20,13 @@ namespace tdx {
             public:
 
                 ParametersDialog() {
-                    QScrollArea *window = new QScrollArea(this);
-                    window->setWidgetResizable(true);
-                    window->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-                    
-                    widget::ParametersWidget* wid = new widget::ParametersWidget(0);
-                    window->setWidget(wid);
-                    
                     setWindowTitle(tr("Project Parameters"));
                     
+                    widget::ParametersWidget* wid = new widget::ParametersWidget(0);
+                                     
                     QGridLayout* layout = new QGridLayout(this);
+                    layout->addWidget(wid);
                     setLayout(layout);
-                    
-                    layout->addWidget(window);
                 }
 
             };

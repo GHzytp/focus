@@ -5,7 +5,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QFormLayout>
-#include <QGroupBox>
+#include <QFrame>
 #include <QLabel>
 #include <QHash>
 #include <QString>
@@ -40,7 +40,7 @@ namespace tdx {
                 
                 QVBoxLayout* mainLayout_;
                 QFormLayout* formLayout_;
-                QGroupBox* groupBox_;
+                QFrame* parameterFrame_;
                 
             };
         }
