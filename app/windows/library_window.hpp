@@ -35,10 +35,9 @@ namespace tdx {
 
             public:
                 LibraryWindow(QWidget* parent = NULL);
-
+                
             public slots:
-                void open();
-                void saveAs();
+                void load();
 
             private:
                 void createActions();
@@ -46,8 +45,7 @@ namespace tdx {
 
                 widget::ImageLibraryWidget* library_widget_;
 
-                QAction *openAct;
-                QAction *saveAsAct;
+                QAction *loadAct;
 
                 QGridLayout* main_layout_;
                 QToolBar* main_tool_bar_;

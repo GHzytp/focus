@@ -26,7 +26,7 @@
 
 #include "dialogs/preferences.hpp"
 #include "dialogs/parameters.hpp"
-#include "wizards/import_wizard.hpp"
+#include "wizards/import_images_wizard.hpp"
 
 class QStackedWidget;
 class QToolBar;
@@ -87,13 +87,9 @@ namespace tdx {
             dialog::PreferencesDialog* preferencesDialog_;
             dialog::ParametersDialog* parametersDialog_;
             
-            //Wizards
-            wizard::ImportWizard* importWizard_;
-            
             //check initializations
             bool preferencesDialogInit_ = false;
             bool parametersDialogInit_ = false;
-            bool importWizardInit_ = false;
             
             QToolBar* mainToolbar_;
             QAction* showLibraryAct_;

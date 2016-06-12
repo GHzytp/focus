@@ -130,7 +130,7 @@ namespace tdx {
                                 maxDefined = true;
                             }
                         }
-                        
+
                         return minMaxPairs;
                     }
 
@@ -181,6 +181,7 @@ namespace tdx {
 
                 void setContext(ConfigContext context) {
                     context_ = context;
+                    
                 }
 
                 TypeInfo typeInfo() {
@@ -191,17 +192,17 @@ namespace tdx {
                     //Check for the changable properties
                     //if not return global otherwise return at correct config location
                     if (prop == "value" || prop == "iswrong" || prop == "locked") {
-                        ConfigLevel configFileLevel = getConfigFileLevel(prop);
-                        if (configFileLevel == ConfigLevel::GLOBAL) {
-                            return globalProperty(prop);
-                        } else {
-                            conf::ProjectParameterConfiguration paramConfig;
-                            paramConfig.setCurrentParameter(name_);
-                            for (int i = 1; i <= static_cast<int> (configFileLevel); ++i) {
-                                paramConfig.beginGroup(context_.levelAt(i--));
-                            }
-                            return paramConfig.currentParameterProperty(prop);
+                        conf::ProjectParameterConfiguration paramConfig_;
+                        for (QString level : context_.levels()) paramConfig_.beginGroup(level);
+                        paramConfig_.setCurrentParameter(name_);
+                        int configLevel = context_.levels().size();
+                        while (configLevel >= 0 && !paramConfig_.currentParameterPropertyExists(prop)) {
+                            if (configLevel != 0) paramConfig_.endGroup();
+                            configLevel--;
                         }
+                        
+                        if (configLevel < 0) return globalProperty(prop);
+                        else return paramConfig_.currentParameterProperty(prop);
                     } else {
                         return globalProperty(prop);
                     }
@@ -251,20 +252,6 @@ namespace tdx {
 
 
             private:
-
-                ConfigLevel getConfigFileLevel(const QString& prop) {
-                    conf::ProjectParameterConfiguration paramConfig;
-                    QString level;
-                    foreach(level, context_.levels()) paramConfig.beginGroup(level);
-                    paramConfig.setCurrentParameter(name_);
-                    int configLevel = context_.levels().size();
-                    while (configLevel >= 0 && !paramConfig.currentParameterPropertyExists(prop)) {
-                        if (configLevel != 0) paramConfig.endGroup();
-                        configLevel--;
-                    }
-                    ConfigLevel configFileLevel_ = static_cast<ConfigLevel> (configLevel);
-                    return configFileLevel_;
-                }
 
                 QString globalProperty(const QString& prop) {
                     conf::GlobalParameterConfiguration globalConfig;

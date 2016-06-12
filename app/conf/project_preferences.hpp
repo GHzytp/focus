@@ -78,10 +78,23 @@ namespace tdx {
                     setValue("group", group);
                     endGroup();
                 }
-                
+
                 QString importGroup() {
                     beginGroup("import");
                     QString val = value("group").toString();
+                    endGroup();
+                    return val;
+                }
+                
+                void setImportIgnorePattern(const QString& ignore) {
+                    beginGroup("import");
+                    setValue("ignore", ignore);
+                    endGroup();
+                }
+                
+                QString importIgnorePattern() {
+                    beginGroup("import");
+                    QString val = value("ignore").toString();
                     endGroup();
                     return val;
                 }

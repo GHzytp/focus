@@ -80,7 +80,6 @@ namespace tdx {
                     QStringList paths = imageGroups();
                     if(paths.contains(group)) return; 
                     paths.append(group);
-                    clear();
                     beginWriteArray("groups");
                     for (int i = 0; i < paths.size(); ++i) {
                         setArrayIndex(i);

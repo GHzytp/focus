@@ -34,61 +34,19 @@ LibraryWindow::LibraryWindow(QWidget* parent)
     main_layout_->addWidget(library_widget_, 0, 0);
 }
 
-void LibraryWindow::open()
-{
-    QString fileName =
-            QFileDialog::getOpenFileName(this, tr("Open Bookmark File"),
-                                         QDir::currentPath(),
-                                         tr("XBEL Files (*.xbel *.xml)"));
-    if (fileName.isEmpty())
-        return;
-
-    QFile file(fileName);
-    if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        QMessageBox::warning(this, tr("SAX Bookmarks"),
-                             tr("Cannot read file %1:\n%2.")
-                             .arg(fileName)
-                             .arg(file.errorString()));
-        return;
-    }
-
-    library_widget_->read(&file);
-}
-
-void LibraryWindow::saveAs()
-{
-    QString fileName =
-            QFileDialog::getSaveFileName(this, tr("Save Bookmark File"),
-                                         QDir::currentPath(),
-                                         tr("XBEL Files (*.xbel *.xml)"));
-    if (fileName.isEmpty())
-        return;
-
-    QFile file(fileName);
-    if (!file.open(QFile::WriteOnly | QFile::Text)) {
-        QMessageBox::warning(this, tr("SAX Bookmarks"),
-                             tr("Cannot write file %1:\n%2.")
-                             .arg(fileName)
-                             .arg(file.errorString()));
-        return;
-    }
-
-    library_widget_->write(&file);
+void LibraryWindow::load() {
+    library_widget_->load();
 }
 
 void LibraryWindow::createActions()
 {
-    openAct = new QAction(tr("&Open..."), this);
-    connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
-
-    saveAsAct = new QAction(tr("&Save As..."), this);
-    connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
+    loadAct = new QAction(tr("&Reload"), this);
+    connect(loadAct, SIGNAL(triggered()), this, SLOT(load()));
 }
 
 void LibraryWindow::setup_toolbar()
 {
     main_tool_bar_ = new QToolBar(this);
     main_tool_bar_->setOrientation(Qt::Vertical);
-    main_tool_bar_->addAction(openAct);
-    main_tool_bar_->addAction(saveAsAct);
+    main_tool_bar_->addAction(loadAct);
 }

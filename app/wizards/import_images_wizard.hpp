@@ -17,9 +17,9 @@
 #include <QWizard>
 #include <QString>
 
-#include "import_result.hpp"
-#include "import_images.hpp"
-#include "label_page.hpp"
+#include "import_execute_page.hpp"
+#include "import_options_page.hpp"
+#include "label_wizard_page.hpp"
 
 namespace tdx {
 
@@ -27,13 +27,13 @@ namespace tdx {
 
         namespace wizard {
 
-            class ImportWizard : public QWizard {
+            class ImportImagesWizard : public QWizard {
                 
                 Q_OBJECT
                 
             public:
 
-                ImportWizard(QWidget *parent)
+                ImportImagesWizard(QWidget *parent)
                 : QWizard(parent) {
                     
                     QWizardPage* introPage = new LabelWizardPage(introText());
@@ -44,13 +44,21 @@ namespace tdx {
                     conclusionPage->setTitle("Conclusion");
                     
                     addPage(introPage);
-                    addPage(new ImportImagesWizardPage);
-                    addPage(new ImportResultWizardPage);
+                    addPage(new ImportOptionsWizardPage);
+                    addPage(new ImportExecuteWizardPage);
                     addPage(conclusionPage);
 
                     //setWizardStyle(QWizard::MacStyle);
                     setWindowTitle(tr("Import images and movies"));
                 }
+                
+                void accept() override {
+                    emit imagesImported();
+                    QDialog::accept();
+                }
+                
+            signals:
+                void imagesImported();
                 
             private:
                 QString introText() {
@@ -61,7 +69,7 @@ namespace tdx {
                 }
                 
                 QString conclusionText() {
-                    return QString("The process was successfully completed");
+                    return QString("The process was completed");
                 }
 
 

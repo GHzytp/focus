@@ -109,10 +109,10 @@ set(MOC_HDRS
         widgets/parameter_section.hpp
         widgets/parameters_widget.hpp
         widgets/yesno_widget.hpp
-        wizards/import_images.hpp
-        wizards/import_result.hpp
-        wizards/import_wizard.hpp
-        wizards/label_page.hpp
+        wizards/import_execute_page.hpp
+        wizards/import_images_wizard.hpp
+        wizards/import_options_page.hpp
+        wizards/label_wizard_page.hpp
    )
 
 # Create the Sources from the MOC headers

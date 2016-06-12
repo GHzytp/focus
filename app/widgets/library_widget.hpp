@@ -19,7 +19,6 @@
 
 #include <QSortFilterProxyModel>
 #include <QDir>
-#include <QDomDocument>
 #include <QHash>
 #include <QIcon>
 #include <QTreeWidget>
@@ -35,23 +34,9 @@ namespace tdx {
 
             public:
                 ImageLibraryWidget(QWidget *parent = NULL);
-
-                bool read(QIODevice *device);
-                bool write(QIODevice *device);
-
-            private slots:
-                void updateDomElement(QTreeWidgetItem *item, int column);
-
-            private:
-                void parseFolderElement(const QDomElement &element,
-                        QTreeWidgetItem *parentItem = 0);
-                QTreeWidgetItem *createItem(const QDomElement &element,
-                        QTreeWidgetItem *parentItem = 0);
-
-                QDomDocument domDocument;
-                QHash<QTreeWidgetItem *, QDomElement> domElementForItem;
-                QIcon folderIcon;
-                QIcon bookmarkIcon;
+                
+            public slots:
+                void load();
             };
         }
     }
