@@ -14,7 +14,9 @@
  * License for more details <http://www.gnu.org/licenses/>.
  */
 
-#include <QStackedWidget>
+#include <iostream>
+
+#include <QTabWidget>
 #include <QToolBar>
 #include <QAction>
 #include <QMenuBar>
@@ -37,11 +39,15 @@
 
 using namespace tdx::app;
 
+MainWindow::MainWindow(QString projectPath, QWidget* parent)
+: QMainWindow(parent) {
+    loadProject(projectPath);
+    initialize();
+}
+
 void MainWindow::initialize() {
     setupWindows();
-    setupActions();
     setupMenubar();
-    setupToolbar();
 
     setUnifiedTitleAndToolBarOnMac(true);
 
@@ -49,35 +55,36 @@ void MainWindow::initialize() {
     conf::UserPreferences().loadWindowPreferences(this);
 
     conf::GlobalParameterConfiguration().syncGlobalParameters();
-
-    showLibraryWindow();
 }
 
 void MainWindow::setupWindows() {
-    centralWin_ = new QStackedWidget(this);
+    centralWin_ = new QTabWidget(this);
+    centralWin_->setTabsClosable(true);
+    
+    connect(centralWin_, &QTabWidget::tabCloseRequested,
+            [=] (int index) {
+                centralWin_->removeTab(index);
+                imagesShown_.removeAt(index-2);
+            });
+
     libraryWin_ = new window::LibraryWindow(centralWin_);
-    processWin_ = new window::ProcessWindow(centralWin_);
+    connect(libraryWin_->libraryWidget(), &QTreeWidget::itemDoubleClicked,
+            [=] (QTreeWidgetItem *item, int column) {
+                showImageWindow(item->data(0, Qt::DisplayRole).toString());
+            } );
+    
     mergeWin_ = new window::MergeWindow(centralWin_);
 
-    centralWin_->addWidget(libraryWin_);
-    centralWin_->addWidget(processWin_);
-    centralWin_->addWidget(mergeWin_);
+    centralWin_->addTab(libraryWin_, "Project Library");
+    centralWin_->addTab(mergeWin_, "Merge Tool");
+
+    //No closable buttons on the library and merge tabs
+    centralWin_->tabBar()->setTabButton(0, QTabBar::RightSide, 0);
+    centralWin_->tabBar()->setTabButton(0, QTabBar::LeftSide, 0);
+    centralWin_->tabBar()->setTabButton(1, QTabBar::RightSide, 0);
+    centralWin_->tabBar()->setTabButton(1, QTabBar::LeftSide, 0);
+
     setCentralWidget(centralWin_);
-}
-
-void MainWindow::setupActions() {
-    showLibraryAct_ = new QAction(repo::IconRepository::get("library"), tr("Library"), this);
-    showLibraryAct_->setShortcut(tr("Ctrl+L"));
-    connect(showLibraryAct_, SIGNAL(triggered()), this, SLOT(showLibraryWindow()));
-
-    showProcessAct_ = new QAction(repo::IconRepository::get("process"), tr("Process"), this);
-    showProcessAct_->setShortcut(tr("Ctrl+P"));
-    connect(showProcessAct_, SIGNAL(triggered()), this, SLOT(showProcessWindow()));
-
-    showMergeAct_ = new QAction(repo::IconRepository::get("merge"), tr("Merge"), this);
-    showMergeAct_->setShortcut(tr("Ctrl+M"));
-    connect(showMergeAct_, SIGNAL(triggered()), this, SLOT(showMergeWindow()));
-
 }
 
 void MainWindow::setupMenubar() {
@@ -126,29 +133,6 @@ void MainWindow::setupMenubar() {
     menuBar()->addMenu(fileMenu);
     menuBar()->addMenu(optionsMenu);
 
-}
-
-void MainWindow::setupToolbar() {
-    mainToolbar_ = new QToolBar(this);
-    mainToolbar_->setIconSize(QSize(32, 32));
-    mainToolbar_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    mainToolbar_->addAction(showLibraryAct_);
-    mainToolbar_->addAction(showProcessAct_);
-    mainToolbar_->addAction(showMergeAct_);
-
-    addToolBar(mainToolbar_);
-}
-
-void MainWindow::showLibraryWindow() {
-    centralWin_->setCurrentWidget(libraryWin_);
-}
-
-void MainWindow::showProcessWindow() {
-    centralWin_->setCurrentWidget(processWin_);
-}
-
-void MainWindow::showMergeWindow() {
-    centralWin_->setCurrentWidget(mergeWin_);
 }
 
 void MainWindow::openProject() {
@@ -209,6 +193,23 @@ void MainWindow::showParameters() {
         parametersDialog_ = new dialog::ParametersDialog(this);
     }
     parametersDialog_->showNormal();
+}
+
+void MainWindow::showImageWindow(const QString& imageNumber) {
+    
+    if (!imagesInitializedToTabs_.contains(imageNumber)) {
+        window::ProcessWindow* imageWindow = new window::ProcessWindow(imageNumber, centralWin_);
+        imagesInitializedToTabs_.insert(imageNumber, imageWindow);
+    }
+
+    //Check if the tab is already visible
+    if(!imagesShown_.contains(imageNumber)) {
+        int currTabIndex = centralWin_->count();
+        centralWin_->addTab(imagesInitializedToTabs_[imageNumber], imageNumber);
+        imagesShown_.insert(currTabIndex, imageNumber);
+    }
+
+    centralWin_->setCurrentWidget(imagesInitializedToTabs_[imageNumber]);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {

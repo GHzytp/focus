@@ -18,6 +18,7 @@
 #define PROCESS_WINDOW_HPP
 
 #include <QWidget>
+#include <QString>
 
 namespace tdx {
     
@@ -27,18 +28,20 @@ namespace tdx {
             
             class ProcessWindow : public QWidget {
                 
-            Q_OBJECT
+                Q_OBJECT
             
             public:
                 
-                ProcessWindow(QWidget* parent = NULL)
-                : QWidget(parent){
+                ProcessWindow(const QString& imageNumber, QWidget* parent = NULL)
+                : QWidget(parent), imageNumber_(imageNumber){
                     initialize();
                 }
                 
                 
             private:
                 void initialize();
+                
+                QString imageNumber_;
                 
             };
             

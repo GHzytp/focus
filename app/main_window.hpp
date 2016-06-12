@@ -18,7 +18,7 @@
 #define MAIN_WINDOW_HPP
 
 #include <QMainWindow>
-#include <QSettings>
+#include <QList>
 
 #include "windows/library_window.hpp"
 #include "windows/merge_window.hpp"
@@ -28,7 +28,7 @@
 #include "dialogs/parameters.hpp"
 #include "wizards/import_images_wizard.hpp"
 
-class QStackedWidget;
+class QTabWidget;
 class QToolBar;
 class QAction;
 class QCloseEvent;
@@ -41,16 +41,10 @@ namespace tdx {
             Q_OBJECT
 
         public:
-            MainWindow(QString projectPath, QWidget *parent = NULL)
-            : QMainWindow(parent) {
-                loadProject(projectPath);
-                initialize();
-            }
+            MainWindow(QString projectPath, QWidget *parent = NULL);
 
         public slots:
-            void showLibraryWindow();
-            void showProcessWindow();
-            void showMergeWindow();
+            void showImageWindow(const QString& imageNumber);
             
             void showPreferences();
             void showParameters();
@@ -68,20 +62,18 @@ namespace tdx {
 
             void initialize();
             void setupWindows();
-            void setupActions();
             void setupMenubar();
-            void setupToolbar();
             
-            bool userReallyWantsToQuit();
-            
-            bool projectLoaded_;
+            bool userReallyWantsToQuit();          
             
             //Main Windows
-            QStackedWidget* centralWin_;
+            QTabWidget* centralWin_;
             window::LibraryWindow* libraryWin_;
             window::MergeWindow* mergeWin_;
-            window::ProcessWindow* processWin_;
             
+            //Image Windows
+            QMap<QString, window::ProcessWindow*> imagesInitializedToTabs_;
+            QStringList imagesShown_;
             
             //Dialogs
             dialog::PreferencesDialog* preferencesDialog_;
@@ -92,9 +84,6 @@ namespace tdx {
             bool parametersDialogInit_ = false;
             
             QToolBar* mainToolbar_;
-            QAction* showLibraryAct_;
-            QAction* showProcessAct_;
-            QAction* showMergeAct_;
             
 
         };

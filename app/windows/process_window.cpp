@@ -24,6 +24,6 @@ using namespace tdx::app::window;
 void ProcessWindow::initialize(){
     QGridLayout* main_layout = new QGridLayout(this);
     this->setLayout(main_layout);
-    main_layout->addWidget(new QLabel("I'm a Process Window", this));
+    main_layout->addWidget(new QLabel(QString("I'm a Process window processing image: ") + imageNumber_, this));
     //TODO Add widgets and stuff
 }

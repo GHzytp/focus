@@ -36,6 +36,10 @@ namespace tdx {
             public:
                 LibraryWindow(QWidget* parent = NULL);
                 
+                widget::ImageLibraryWidget* libraryWidget() {
+                    return library_widget_;
+                };
+                
             public slots:
                 void load();
 
