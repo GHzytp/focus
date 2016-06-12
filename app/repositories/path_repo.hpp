@@ -63,6 +63,9 @@ namespace tdx {
                     return QDir::homePath() + "/.2dx/global.parameters.conf";
                 }
 
+                static QString applicationExecutable() {
+                    return applicationDir().absolutePath() + "/../" + "bin/" + "2dx_gui";
+                }
             };
         }
     }

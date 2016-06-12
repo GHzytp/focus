@@ -65,6 +65,7 @@ namespace tdx {
                 
                 void setPath(const QString& path) {
                     pathEdit_->setText(path);
+                    defaultPath_ = path;
                 }
                 
             signals:

@@ -42,6 +42,10 @@ namespace tdx {
                     projectPath_ = path;
                 }
                 
+                QString imagesDir() {
+                    return projectPath()+"/images/";
+                }
+                
                 QString parameterConfFilePath() {
                     return projectPath()+"/.2dx_project/project.parameters.conf";
                 }
@@ -49,6 +53,11 @@ namespace tdx {
                 QString preferencesConfFilePath() {
                     return projectPath()+"/.2dx_project/project.preferences.conf";
                 }
+                
+                QString imagesConfFilePath() {
+                    return projectPath()+"/.2dx_project/project.images.conf";
+                }
+                    
 
             private:
 

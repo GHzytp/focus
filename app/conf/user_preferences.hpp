@@ -32,15 +32,12 @@ namespace tdx {
         namespace conf {
 
             class UserPreferences : public QSettings {
-                
-                Q_OBJECT
 
             public:
                 UserPreferences()
                 : QSettings(repo::PathRepo::userPreferencesConfFile(), QSettings::Format::IniFormat) {
                 }
-                
-            public slots:
+
                 void setFontSize(const QString& value) {
                     beginGroup("appearance");
                     beginGroup("font");
@@ -89,6 +86,19 @@ namespace tdx {
                     endGroup();
                     endGroup();
                     QApplication::setFont(font);
+                }
+                
+                void addApplication(const QString& appTag, const QString& appPath) {
+                    beginGroup("application");
+                    setValue(appTag, appPath);
+                    endGroup();
+                }
+                
+                QString getApplication(const QString& appTag) {
+                    beginGroup("application");
+                    QString val = value(appTag).toString();
+                    endGroup();
+                    return val;
                 }
                 
                 void saveWindowPreferences(QMainWindow* window) {

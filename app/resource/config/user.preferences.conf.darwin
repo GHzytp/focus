@@ -1,0 +1,8 @@
+[application]
+scriptEditor=open -e 
+webBrowser=open
+psViewer=open
+pdfViewer=open
+viewer3D=open -n -a /Applications/Chimera.app
+ScratchDisk=./
+tifViewer=open -a /Applications/Preview.app

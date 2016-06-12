@@ -29,8 +29,8 @@
 
 using namespace tdx::app::dialog;
 
-PreferencesDialog::PreferencesDialog()
-{
+PreferencesDialog::PreferencesDialog(QWidget* parent) 
+: QDialog(parent) {
     contentsWidget_ = new QListWidget;
     contentsWidget_->setViewMode(QListView::IconMode);
     contentsWidget_->setIconSize(QSize(96, 84));
@@ -68,8 +68,7 @@ PreferencesDialog::PreferencesDialog()
     setWindowTitle(tr("Preferences"));
 }
 
-void PreferencesDialog::createIcons()
-{
+void PreferencesDialog::createIcons() {
     QListWidgetItem *appearanceButton = new QListWidgetItem(contentsWidget_);
     appearanceButton->setIcon(repo::IconRepository::get("appearance"));
     appearanceButton->setText(tr("Appearance"));
@@ -91,61 +90,53 @@ void PreferencesDialog::createIcons()
     connect(contentsWidget_, &QListWidget::currentItemChanged, this, &PreferencesDialog::changePage);
 }
 
-void PreferencesDialog::changePage(QListWidgetItem *current, QListWidgetItem *previous)
-{
+void PreferencesDialog::changePage(QListWidgetItem *current, QListWidgetItem *previous) {
     if (!current)
         current = previous;
 
     pagesWidget_->setCurrentIndex(contentsWidget_->row(current));
 }
 
-
-QWidget* PreferencesDialog::getApperancePage()
-{
+QWidget* PreferencesDialog::getApperancePage() {
     QWidget* widget = new QWidget();
-    
+
     //---------------------
     // Font
     //---------------------
     QGroupBox *fontGroup = new QGroupBox(tr("Font"));
 
     //Font Size
-    QLabel *fontSizeLabel = new QLabel(tr("Size"));
-    
-    conf::UserPreferences manager;
-    
     QComboBox *fontSizeCombo = new QComboBox;
-    for(int i=8; i<16; ++i)  fontSizeCombo->addItem(QString::number(i));
+    for (int i = 8; i < 16; ++i) fontSizeCombo->addItem(QString::number(i));
     fontSizeCombo->setCurrentText(QString::number(QApplication::font().pointSize()));
-    
-    connect(fontSizeCombo, SIGNAL(currentIndexChanged(const QString&)), 
-            &manager, SLOT(setFontSize(const QString&)));
-    
+
+    connect(fontSizeCombo, static_cast<void(QComboBox::*)(const QString&)> (&QComboBox::currentTextChanged),
+            [ = ] (const QString & value){conf::UserPreferences().setFontSize(value);});
+
     //Font Weight
-    QLabel *fontWeightLabel = new QLabel(tr("Weight"));
     QComboBox *fontWeightCombo = new QComboBox;
     fontWeightCombo->addItems(QStringList() << "0" << "25" << "50" << "75");
     fontWeightCombo->setCurrentText(QString::number(QApplication::font().weight()));
-    
-    connect(fontWeightCombo, SIGNAL(currentIndexChanged(const QString&)), 
-            &manager, SLOT(setFontWeight(const QString&)));
-    
+
+    connect(fontWeightCombo, static_cast<void(QComboBox::*)(const QString&)> (&QComboBox::currentTextChanged),
+            [ = ] (const QString & value){conf::UserPreferences().setFontWeight(value);});
+
     //Font Family
-    QLabel *fontFamilyLabel = new QLabel(tr("Family"));
     QComboBox *fontFamilyCombo = new QComboBox;
     fontFamilyCombo->addItems(QFontDatabase().families(QFontDatabase::Latin));
     fontFamilyCombo->setCurrentText(QApplication::font().family());
-    
-    connect(fontFamilyCombo, SIGNAL(currentIndexChanged(const QString&)), 
-            &manager, SLOT(setFontFamily(const QString&)));
 
-    QGridLayout *fontLayout = new QGridLayout;
-    fontLayout->addWidget(fontSizeLabel, 0, 0);
-    fontLayout->addWidget(fontSizeCombo, 0, 1);
-    fontLayout->addWidget(fontWeightLabel, 1, 0);
-    fontLayout->addWidget(fontWeightCombo, 1, 1);
-    fontLayout->addWidget(fontFamilyLabel, 2, 0);
-    fontLayout->addWidget(fontFamilyCombo, 2, 1);
+    connect(fontFamilyCombo, static_cast<void(QComboBox::*)(const QString&)> (&QComboBox::currentTextChanged),
+            [ = ] (const QString & value){conf::UserPreferences().setFontFamily(value);});
+
+    QFormLayout *fontLayout = new QFormLayout;
+                    fontLayout->setRowWrapPolicy(QFormLayout::WrapLongRows);
+                    fontLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+    fontLayout->setFormAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    fontLayout->setLabelAlignment(Qt::AlignRight);
+    fontLayout->addRow("Font Size", fontSizeCombo);
+    fontLayout->addRow("Font Weight", fontWeightCombo);
+    fontLayout->addRow("Font Family", fontFamilyCombo);
 
     fontGroup->setLayout(fontLayout);
 
@@ -156,8 +147,7 @@ QWidget* PreferencesDialog::getApperancePage()
     return widget;
 }
 
-QWidget* PreferencesDialog::getViewersPage()
-{
+QWidget* PreferencesDialog::getViewersPage() {
     QWidget* widget = new QWidget();
     QGroupBox *updateGroup = new QGroupBox(tr("Package selection"));
     QCheckBox *systemCheckBox = new QCheckBox(tr("Update system"));
@@ -196,8 +186,7 @@ QWidget* PreferencesDialog::getViewersPage()
     return widget;
 }
 
-QWidget* PreferencesDialog::getAppsPage()
-{
+QWidget* PreferencesDialog::getAppsPage() {
     QWidget* widget = new QWidget();
     QGroupBox *packagesGroup = new QGroupBox(tr("Look for packages"));
 

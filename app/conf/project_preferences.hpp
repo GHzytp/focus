@@ -33,25 +33,71 @@ namespace tdx {
         namespace conf {
 
             class ProjectPreferences : public QSettings {
-
+                
             public:
                 ProjectPreferences()
                 : QSettings(repo::ProjectRepo::Instance().preferencesConfFilePath(), QSettings::Format::IniFormat) {
                 }
                 
                 void setProjectName(const QString& name) {
-                    beginGroup("properties");
                     setValue("name", name);
-                    endGroup();
                 }
                 
                 QString projectName() {
-                    beginGroup("properties");
-                    QString name = value("name").toString();
-                    endGroup();
-                    return name;
+                    return value("name").toString();
                 }
                 
+                void setImportImageDir(const QString& path) {
+                    beginGroup("import");
+                    setValue("image", path);
+                    endGroup();
+                }
+                
+                QString importImageDir() {
+                    beginGroup("import");
+                    QString val = value("image").toString();
+                    endGroup();
+                    return val;
+                }
+                
+                void setImportMoiveDir(const QString& path) {
+                    beginGroup("import");
+                    setValue("movie", path);
+                    endGroup();
+                }
+                
+                QString importMovieDir() {
+                    beginGroup("import");
+                    QString val = value("movie").toString();
+                    endGroup();
+                    return val;
+                }
+                
+                void setImportGroup(const QString& group) {
+                    beginGroup("import");
+                    setValue("group", group);
+                    endGroup();
+                }
+                
+                QString importGroup() {
+                    beginGroup("import");
+                    QString val = value("group").toString();
+                    endGroup();
+                    return val;
+                }
+                
+                void setImportImageLength(int length) {
+                    beginGroup("import");
+                    setValue("length", length);
+                    endGroup();
+                }
+                
+                int importImageLength() {
+                    beginGroup("import");
+                    int val = value("length").toInt();
+                    endGroup();
+                    return val;
+                }
 
             };
         }

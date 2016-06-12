@@ -36,7 +36,7 @@ namespace tdx {
                 Q_OBJECT
 
             public:
-                PreferencesDialog();
+                PreferencesDialog(QWidget* parent = NULL);
 
             public slots:
                 void changePage(QListWidgetItem* current, QListWidgetItem* previous);

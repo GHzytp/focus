@@ -44,6 +44,11 @@ namespace tdx {
                 QList<QLineEdit*> widgets() {
                     return widgets_;
                 }
+                
+                QString valueAt(int widgetNumber) {
+                    if(widgetNumber < widgets_.size()) widgets_.at(widgetNumber)->text(); 
+                    else return QString();
+                }
 
             public slots:
 
@@ -91,6 +96,14 @@ namespace tdx {
                             if(widgetRange.value(i).size() > 1 && !widgetRange.value(i)[1].isEmpty()) validator->setTop(widgetRange.value(i)[1].toInt());
                             widgets()[i]->setValidator(validator);
                         }
+                    }
+                }
+                
+                void setAllRanges(int min, int max) {
+                    foreach(QLineEdit* widget , widgets()) {
+                        QIntValidator* validator = new QIntValidator();
+                        validator->setRange(min, max);
+                        widget->setValidator(validator);
                     }
                 }
                 

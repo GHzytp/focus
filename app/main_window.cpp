@@ -23,6 +23,7 @@
 #include <QFileDialog>
 #include <QCloseEvent>
 #include <QMessageBox>
+#include <QProcess>
 
 #include "main_window.hpp"
 
@@ -32,6 +33,7 @@
 
 #include "conf/user_preferences.hpp"
 #include "conf/parameters_configuration.hpp"
+#include "conf/user_projects.hpp"
 
 using namespace tdx::app;
 
@@ -47,9 +49,6 @@ void MainWindow::initialize() {
     conf::UserPreferences().loadWindowPreferences(this);
     
     conf::GlobalParameterConfiguration().syncGlobalParameters();
-    
-    preferencesDialog_ = new dialog::PreferencesDialog();
-    parametersDialog_ = new dialog::ParametersDialog();
     
     showLibraryWindow();
 }
@@ -79,29 +78,38 @@ void MainWindow::setupActions() {
     showMergeAct_->setShortcut(tr("Ctrl+M"));
     connect(showMergeAct_, SIGNAL(triggered()), this, SLOT(showMergeWindow()));
 
-    openProjectAct_ = new QAction("Open Project", this);
-    openProjectAct_->setShortcut(tr("Ctrl+O"));
-    connect(openProjectAct_, SIGNAL(triggered()), this, SLOT(openProject()));
-
-    newProjectAct_ = new QAction("New Project", this);
-    newProjectAct_->setShortcut(tr("Ctrl+N"));
-    connect(newProjectAct_, SIGNAL(triggered()), this, SLOT(newProject()));
-
-    importImagesAct_ = new QAction("Import Images", this);
-    importImagesAct_->setShortcut(tr("Ctrl+I"));
-    connect(importImagesAct_, SIGNAL(triggered()), this, SLOT(importImages()));
-
-    exitAct_ = new QAction("Quit", this);
-    exitAct_->setShortcut(tr("Ctrl+Q"));
-    connect(exitAct_, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
-
 }
 
 void MainWindow::setupMenubar() {
-    QMenu *fileMenu = new QMenu("File");
+    QMenu* fileMenu = new QMenu("File");
+    
+    QAction* openProjectAct_ = new QAction("Open Project", this);
+    openProjectAct_->setShortcut(tr("Ctrl+O"));
+    connect(openProjectAct_, SIGNAL(triggered()), this, SLOT(openProject()));
     fileMenu->addAction(openProjectAct_);
-    fileMenu->addAction(newProjectAct_);
+    
+    QStringList recents = conf::UserProjects().projectPaths();
+    if(recents.count() > 0) {
+        QMenu* openRecentsMenu = new QMenu("Recent Projects");
+        foreach(QString recent, recents) {
+            if(recent != "" ) {
+                QAction* act = new QAction(recent, this);
+                connect(openProjectAct_, &QAction::triggered, 
+                    [=] (bool) { openProject(recent);});
+                openRecentsMenu->addAction(act);
+            }
+        }
+        fileMenu->addMenu(openRecentsMenu);
+    }
+
+    QAction* importImagesAct_ = new QAction("Import Images", this);
+    importImagesAct_->setShortcut(tr("Ctrl+I"));
+    connect(importImagesAct_, SIGNAL(triggered()), this, SLOT(importImages()));
     fileMenu->addAction(importImagesAct_);
+    
+    QAction* exitAct_ = new QAction("Quit", this);
+    exitAct_->setShortcut(tr("Ctrl+Q"));
+    connect(exitAct_, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
     fileMenu->addAction(exitAct_);
     
     QMenu *optionsMenu = new QMenu("Options");
@@ -143,40 +151,70 @@ void MainWindow::showMergeWindow() {
 }
 
 void MainWindow::openProject() {
-    
+    QProcess::startDetached(repo::PathRepo::applicationExecutable());
 }
 
-void MainWindow::newProject() {
+void MainWindow::openProject(const QString& projectPath) {
+    QProcess::startDetached(repo::PathRepo::applicationExecutable() + " " + projectPath);
+}
 
+void MainWindow::newProject(const QString& projectPath) {
+    quint32 choice = QMessageBox::question(NULL,
+                "Confirm Create new Project?",
+                "No configuration data found in:\n"+projectPath+"\n\nCreate new config files in this directory?",
+                "Create","Cancel",QString(),0,1);
+    
+    if(choice) qApp->closeAllWindows();
+    
+    QDir dir(projectPath);
+    dir.mkdir("merge");
+    dir.mkdir("images");
+    dir.mkpath("merge/proc");
+    dir.mkpath("merge/LOGS");
 }
 
 void MainWindow::importImages() {
-
+    if(!importWizardInit_) {
+        importWizardInit_ = true;
+        importWizard_ = new wizard::ImportWizard(this);
+    }
+    importWizard_->showNormal();
 }
 
 void MainWindow::loadProject(const QString& projectPath) {
     repo::ProjectRepo::Instance().setProjectPath(projectPath);
+    
+    if(!QFileInfo(projectPath + "/.2dx_project").isDir()) {
+        
+    }
+    
+    if(!conf::UserProjects().projectPaths().contains(projectPath)) {
+        conf::UserProjects().addProjectPath(projectPath);
+    }
+    
 }
 
 void MainWindow::showPreferences() {
-    if(preferencesDialog_ == NULL) preferencesDialog_ = new dialog::PreferencesDialog();
+    if(!preferencesDialogInit_) {
+        preferencesDialogInit_ = true;
+        preferencesDialog_ = new dialog::PreferencesDialog(this);
+    }
     preferencesDialog_->showNormal();
 }
 
 void MainWindow::showParameters() {
-    if(parametersDialog_ == NULL) parametersDialog_ = new dialog::ParametersDialog();
+    if(!parametersDialogInit_) {
+        parametersDialogInit_ = true;
+        parametersDialog_ = new dialog::ParametersDialog(this);
+    }
     parametersDialog_->showNormal();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if (userReallyWantsToQuit()) {
-        conf::UserPreferences().saveCurrentFontSettings();
-        conf::UserPreferences().saveWindowPreferences(this);
-        event->accept();
-    } else {
-        event->ignore();
-    }
+    conf::UserPreferences().saveCurrentFontSettings();
+    conf::UserPreferences().saveWindowPreferences(this);
+    event->accept();
 }
 
 bool MainWindow::userReallyWantsToQuit()

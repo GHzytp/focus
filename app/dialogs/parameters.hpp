@@ -19,7 +19,8 @@ namespace tdx {
 
             public:
 
-                ParametersDialog() {
+                ParametersDialog(QWidget* parent = NULL) 
+                : QDialog(parent){
                     setWindowTitle(tr("Project Parameters"));
                     
                     widget::ParametersWidget* wid = new widget::ParametersWidget(0);

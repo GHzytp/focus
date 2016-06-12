@@ -26,6 +26,7 @@
 
 #include "dialogs/preferences.hpp"
 #include "dialogs/parameters.hpp"
+#include "wizards/import_wizard.hpp"
 
 class QStackedWidget;
 class QToolBar;
@@ -55,7 +56,8 @@ namespace tdx {
             void showParameters();
             
             void openProject();
-            void newProject();
+            void openProject(const QString& projectPath);
+            void newProject(const QString& projectPath);
             void importImages();
             
             void loadProject(const QString& projectDirPath);
@@ -77,22 +79,26 @@ namespace tdx {
             //Main Windows
             QStackedWidget* centralWin_;
             window::LibraryWindow* libraryWin_;
-            window::ProcessWindow* processWin_;
             window::MergeWindow* mergeWin_;
+            window::ProcessWindow* processWin_;
+            
             
             //Dialogs
             dialog::PreferencesDialog* preferencesDialog_;
             dialog::ParametersDialog* parametersDialog_;
             
+            //Wizards
+            wizard::ImportWizard* importWizard_;
+            
+            //check initializations
+            bool preferencesDialogInit_ = false;
+            bool parametersDialogInit_ = false;
+            bool importWizardInit_ = false;
+            
             QToolBar* mainToolbar_;
             QAction* showLibraryAct_;
             QAction* showProcessAct_;
             QAction* showMergeAct_;
-            
-            QAction* openProjectAct_;
-            QAction* newProjectAct_;
-            QAction* importImagesAct_;
-            QAction* exitAct_;
             
 
         };

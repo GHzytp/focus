@@ -19,6 +19,9 @@
 #include <QFont>
 #include <QString>
 #include <QStringList>
+#include <QDir>
+
+#include "repositories/path_repo.hpp"
 
 namespace tdx {
 
@@ -30,17 +33,18 @@ namespace tdx {
 
             public:
                 UserProjects()
-                : QSettings(repo::PathRepo::userProjectsConfFile, QSettings::Format::IniFormat) {
+                : QSettings(repo::PathRepo::userProjectsConfFile(), QSettings::Format::IniFormat) {
                 }
 
                 void addProjectPath(const QString& path) {
                     QStringList paths = projectPaths();
-                    paths.push_front(path);
+                    paths.push_front(QDir(path).absolutePath());
+                    paths.removeDuplicates();
                     clear();
                     beginWriteArray("recents");
                     for (int i = 0; i < paths.size(); ++i) {
                         setArrayIndex(i);
-                        setValue("userName", paths.at(i));
+                        setValue("path", paths.at(i));
                     }
                     endArray();
                 }
@@ -50,7 +54,7 @@ namespace tdx {
                     int size = beginReadArray("recents");
                     for (int i = 0; i < size; ++i) {
                         setArrayIndex(i);
-                        paths << value("path").toString();
+                        if(value("path").toString() != "") paths << value("path").toString();
                     }
                     endArray();
                     return paths;

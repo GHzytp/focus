@@ -1,0 +1,8 @@
+[application]
+scriptEditor=gedit
+webBrowser=firefox
+psViewer=evince
+pdfViewer=evince
+viewer3D=chimera --send
+ScratchDisk=./
+tifViewer=firefox
