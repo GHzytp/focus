@@ -14,16 +14,27 @@
  * License for more details <http://www.gnu.org/licenses/>.
  */
 
-#include <QGridLayout>
+#include <QVBoxLayout>
 #include <QLabel>
 
-#include "process_window.hpp"
+#include "image_window.hpp"
+#include "data/parameter.hpp"
+#include "conf/project_images.hpp"
+#include "widgets/parameters_widget.hpp"
 
 using namespace tdx::app::window;
 
-void ProcessWindow::initialize(){
-    QGridLayout* main_layout = new QGridLayout(this);
-    this->setLayout(main_layout);
-    main_layout->addWidget(new QLabel(QString("I'm a Process window processing image: ") + imageNumber_, this));
-    //TODO Add widgets and stuff
+void ImageWindow::initialize(){
+    QVBoxLayout* main_layout = new QVBoxLayout(this);
+    
+    main_layout->addWidget(new QLabel(QString("Image: ") + imageNumber_, this));
+    
+    data::Parameter::ConfigContext context;
+    context.levelUp(conf::ProjectImages().imageGroup(imageNumber_));
+    context.levelUp(imageNumber_);
+    
+    parametersWidget_ = new widget::ParametersWidget(context, this);
+    main_layout->addWidget(parametersWidget_);
+    
+    setLayout(main_layout);
 }

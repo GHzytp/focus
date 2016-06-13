@@ -22,7 +22,7 @@
 
 #include "windows/library_window.hpp"
 #include "windows/merge_window.hpp"
-#include "windows/process_window.hpp"
+#include "windows/image_window.hpp"
 
 #include "dialogs/preferences.hpp"
 #include "dialogs/parameters.hpp"
@@ -72,7 +72,7 @@ namespace tdx {
             window::MergeWindow* mergeWin_;
             
             //Image Windows
-            QMap<QString, window::ProcessWindow*> imagesInitializedToTabs_;
+            QMap<QString, window::ImageWindow*> imagesInitializedToTabs_;
             QStringList imagesShown_;
             
             //Dialogs

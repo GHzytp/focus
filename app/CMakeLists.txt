@@ -97,9 +97,9 @@ set(MOC_HDRS
         conf/user_preferences.hpp
         dialogs/parameters.hpp
         dialogs/preferences.hpp
+        windows/image_window.hpp
         windows/library_window.hpp
         windows/merge_window.hpp
-        windows/process_window.hpp
         widgets/browser_widget.hpp
         widgets/combo_input_widget.hpp
         widgets/edit_set_widget.hpp

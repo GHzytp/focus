@@ -20,19 +20,21 @@
 #include <QWidget>
 #include <QString>
 
+#include "widgets/parameters_widget.hpp"
+
 namespace tdx {
     
     namespace app {
         
         namespace window {
             
-            class ProcessWindow : public QWidget {
+            class ImageWindow : public QWidget {
                 
                 Q_OBJECT
             
             public:
                 
-                ProcessWindow(const QString& imageNumber, QWidget* parent = NULL)
+                ImageWindow(const QString& imageNumber, QWidget* parent = NULL)
                 : QWidget(parent), imageNumber_(imageNumber){
                     initialize();
                 }
@@ -40,6 +42,8 @@ namespace tdx {
                 
             private:
                 void initialize();
+                
+                widget::ParametersWidget* parametersWidget_;
                 
                 QString imageNumber_;
                 

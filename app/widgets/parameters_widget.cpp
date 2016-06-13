@@ -83,8 +83,9 @@ QToolBar* ParametersWidget::toolWidget() {
     basicButton_ = new QToolButton(widget);
     basicButton_->setIcon(repo::IconRepository::get("level-simple"));
     basicButton_->setFixedSize(QSize(48,48));
-    basicButton_->setText("Basic");
-    basicButton_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    //basicButton_->setText("Basic");
+    basicButton_->setToolTip("Basic Parameters");
+    //basicButton_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     basicButton_->setCheckable(true);
     if(userLevel_ == 0)  basicButton_->setChecked(true);
     connect(basicButton_, SIGNAL(clicked()), this, SLOT(setSimpleLevel()));
@@ -93,8 +94,9 @@ QToolBar* ParametersWidget::toolWidget() {
     advancedButton_ = new QToolButton(widget);
     advancedButton_->setIcon(repo::IconRepository::get("level-advanced"));
     advancedButton_->setFixedSize(QSize(48,48));
-    advancedButton_->setText("Advanced");
-    advancedButton_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    //advancedButton_->setText("Advanced");
+    advancedButton_->setToolTip("Advanced Parameters");
+    //advancedButton_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     advancedButton_->setCheckable(true);
     if(userLevel_ == 1)  advancedButton_->setChecked(true);
     connect(advancedButton_, SIGNAL(clicked()), this, SLOT(setAdvancedLevel()));

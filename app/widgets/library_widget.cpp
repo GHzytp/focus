@@ -35,6 +35,11 @@ ImageLibraryWidget::ImageLibraryWidget(QWidget *parent)
     load();
 }
 
+QString ImageLibraryWidget::imageNumberForItem(QTreeWidgetItem* item) {
+    if(itemToImageNumbers_.contains(item)) return itemToImageNumbers_[item];
+    else return QString();
+}
+
 void ImageLibraryWidget::load() {
     
     clear();
@@ -62,6 +67,8 @@ void ImageLibraryWidget::load() {
             context.levelUp(image);
             QString imagePath = data::Parameter("imagename_original", context).value().toString();
             imageItem->setData(1, Qt::DisplayRole, imagePath);
+            
+            itemToImageNumbers_.insert(imageItem, image);
         }
     }
     

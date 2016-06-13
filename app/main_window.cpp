@@ -46,15 +46,14 @@ MainWindow::MainWindow(QString projectPath, QWidget* parent)
 }
 
 void MainWindow::initialize() {
+    conf::UserPreferences().loadAllFontSettings();
+    conf::UserPreferences().loadWindowPreferences(this);
+    conf::GlobalParameterConfiguration().syncGlobalParameters();
+    
     setupWindows();
     setupMenubar();
 
-    setUnifiedTitleAndToolBarOnMac(true);
-
-    conf::UserPreferences().loadAllFontSettings();
-    conf::UserPreferences().loadWindowPreferences(this);
-
-    conf::GlobalParameterConfiguration().syncGlobalParameters();
+    setUnifiedTitleAndToolBarOnMac(true);   
 }
 
 void MainWindow::setupWindows() {
@@ -69,20 +68,25 @@ void MainWindow::setupWindows() {
 
     libraryWin_ = new window::LibraryWindow(centralWin_);
     connect(libraryWin_->libraryWidget(), &QTreeWidget::itemDoubleClicked,
-            [=] (QTreeWidgetItem *item, int column) {
-                showImageWindow(item->data(0, Qt::DisplayRole).toString());
+            [=] (QTreeWidgetItem *item, int) {
+                showImageWindow(libraryWin_->libraryWidget()->imageNumberForItem(item));
             } );
     
     mergeWin_ = new window::MergeWindow(centralWin_);
 
-    centralWin_->addTab(libraryWin_, "Project Library");
-    centralWin_->addTab(mergeWin_, "Merge Tool");
+    centralWin_->addTab(libraryWin_, repo::IconRepository::get("library"), "Project Library");
+    centralWin_->addTab(mergeWin_, repo::IconRepository::get("merge"), "Merge Tool");
 
     //No closable buttons on the library and merge tabs
     centralWin_->tabBar()->setTabButton(0, QTabBar::RightSide, 0);
     centralWin_->tabBar()->setTabButton(0, QTabBar::LeftSide, 0);
     centralWin_->tabBar()->setTabButton(1, QTabBar::RightSide, 0);
     centralWin_->tabBar()->setTabButton(1, QTabBar::LeftSide, 0);
+    
+    
+    //Tab Colors
+    centralWin_->tabBar()->setTabTextColor(0, Qt::darkCyan);
+    centralWin_->tabBar()->setTabTextColor(1, Qt::darkMagenta);
 
     setCentralWidget(centralWin_);
 }
@@ -197,8 +201,10 @@ void MainWindow::showParameters() {
 
 void MainWindow::showImageWindow(const QString& imageNumber) {
     
+    if(imageNumber == "") return;
+    
     if (!imagesInitializedToTabs_.contains(imageNumber)) {
-        window::ProcessWindow* imageWindow = new window::ProcessWindow(imageNumber, centralWin_);
+        window::ImageWindow* imageWindow = new window::ImageWindow(imageNumber, centralWin_);
         imagesInitializedToTabs_.insert(imageNumber, imageWindow);
     }
 
@@ -207,6 +213,7 @@ void MainWindow::showImageWindow(const QString& imageNumber) {
         int currTabIndex = centralWin_->count();
         centralWin_->addTab(imagesInitializedToTabs_[imageNumber], imageNumber);
         imagesShown_.insert(currTabIndex, imageNumber);
+        centralWin_->setTabIcon(currTabIndex, repo::IconRepository::get("image"));
     }
 
     centralWin_->setCurrentWidget(imagesInitializedToTabs_[imageNumber]);

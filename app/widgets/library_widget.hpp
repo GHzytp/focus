@@ -19,9 +19,10 @@
 
 #include <QSortFilterProxyModel>
 #include <QDir>
-#include <QHash>
+#include <QMap>
 #include <QIcon>
 #include <QTreeWidget>
+#include <QTreeWidgetItem>
 
 namespace tdx {
 
@@ -35,8 +36,13 @@ namespace tdx {
             public:
                 ImageLibraryWidget(QWidget *parent = NULL);
                 
+                QString imageNumberForItem(QTreeWidgetItem* item);
+                
             public slots:
                 void load();
+                
+            private:
+                QMap<QTreeWidgetItem*, QString> itemToImageNumbers_;
             };
         }
     }
