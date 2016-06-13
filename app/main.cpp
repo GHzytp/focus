@@ -52,13 +52,11 @@ int main(int argc, char** argv) {
     parser.addPositionalArgument("project_dir", "Path of the 2dx Project to be opened.");
     parser.process(application);
 
-    MainWindow *win;
+    MainWindow* win;
     if (!parser.positionalArguments().isEmpty()) {
         win = new MainWindow(parser.positionalArguments().first());
     } else {
-        QString workingDir = QFileDialog::getExistingDirectory(0,"Select a Project Directory", "~");
-        if(workingDir.isEmpty() || !QDir(workingDir).exists()) std::exit(0);    
-        win = new MainWindow(workingDir);
+        win = new MainWindow();
     }
         
     win->show();

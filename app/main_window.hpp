@@ -41,7 +41,8 @@ namespace tdx {
             Q_OBJECT
 
         public:
-            MainWindow(QString projectPath, QWidget *parent = NULL);
+            MainWindow(QWidget *parent = NULL);
+            MainWindow(const QString& projectPath, QWidget *parent = NULL);
 
         public slots:
             void showImageWindow(const QString& imageNumber);
@@ -51,7 +52,6 @@ namespace tdx {
             
             void openProject();
             void openProject(const QString& projectPath);
-            void newProject(const QString& projectPath);
             void importImages();
             
             void loadProject(const QString& projectDirPath);
@@ -60,11 +60,11 @@ namespace tdx {
             
         private:
 
-            void initialize();
+            void initialize(const QString& projectPath);
             void setupWindows();
             void setupMenubar();
             
-            bool userReallyWantsToQuit();          
+            bool userReallyWantsToQuit();
             
             //Main Windows
             QTabWidget* centralWin_;

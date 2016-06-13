@@ -26,6 +26,7 @@
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QProcess>
+#include <QtCore>
 
 #include "main_window.hpp"
 
@@ -36,24 +37,40 @@
 #include "conf/user_preferences.hpp"
 #include "conf/parameters_configuration.hpp"
 #include "conf/user_projects.hpp"
+#include "wizards/open_project_wizard.hpp"
 
 using namespace tdx::app;
 
-MainWindow::MainWindow(QString projectPath, QWidget* parent)
-: QMainWindow(parent) {
-    loadProject(projectPath);
-    initialize();
+MainWindow::MainWindow(QWidget* parent) 
+: QMainWindow(parent){
+    initialize("");
 }
 
-void MainWindow::initialize() {
+
+MainWindow::MainWindow(const QString& projectPath, QWidget* parent)
+: QMainWindow(parent) {
+    initialize(projectPath);
+}
+
+void MainWindow::initialize(const QString& projectPath) {
     conf::UserPreferences().loadAllFontSettings();
     conf::UserPreferences().loadWindowPreferences(this);
     conf::GlobalParameterConfiguration().syncGlobalParameters();
     
-    setupWindows();
-    setupMenubar();
-
     setUnifiedTitleAndToolBarOnMac(true);   
+    
+    if(projectPath == "") {
+        wizard::OpenProjectWizard* wiz = new wizard::OpenProjectWizard(this);
+        wiz->setAttribute(Qt::WA_DeleteOnClose);
+        connect(wiz, &wizard::OpenProjectWizard::projectSelected,
+                [=](const QString& projectPath){
+                    loadProject(projectPath);
+                });
+        wiz->showNormal();
+    }
+    else {
+        loadProject(projectPath);
+    }   
 }
 
 void MainWindow::setupWindows() {
@@ -147,21 +164,6 @@ void MainWindow::openProject(const QString& projectPath) {
     QProcess::startDetached(repo::PathRepo::applicationExecutable() + " " + projectPath);
 }
 
-void MainWindow::newProject(const QString& projectPath) {
-    quint32 choice = QMessageBox::question(NULL,
-            "Confirm Create new Project?",
-            "No configuration data found in:\n" + projectPath + "\n\nCreate new config files in this directory?",
-            "Create", "Cancel", QString(), 0, 1);
-
-    if (choice) qApp->closeAllWindows();
-
-    QDir dir(projectPath);
-    dir.mkdir("merge");
-    dir.mkdir("images");
-    dir.mkpath("merge/proc");
-    dir.mkpath("merge/LOGS");
-}
-
 void MainWindow::importImages() {
     wizard::ImportImagesWizard* importWizard_ = new wizard::ImportImagesWizard(this);
     importWizard_->setAttribute(Qt::WA_DeleteOnClose);
@@ -171,16 +173,20 @@ void MainWindow::importImages() {
 }
 
 void MainWindow::loadProject(const QString& projectPath) {
+    if(projectPath == "") {
+        std::cerr << "UNEXPECTED ERROR!: Project path not set.";
+        qApp->closeAllWindows();
+    }
+    
     repo::ProjectRepo::Instance().setProjectPath(projectPath);
 
     if (!QFileInfo(projectPath + "/.2dx_project").isDir()) {
-
+        QMessageBox::critical(this, "Not 2DX Project!", "This is not a 2DX Project. No configuration files found.");
+        qApp->closeAllWindows();
     }
-
-    if (!conf::UserProjects().projectPaths().contains(projectPath)) {
-        conf::UserProjects().addProjectPath(projectPath);
-    }
-
+    
+    setupWindows();
+    setupMenubar();
 }
 
 void MainWindow::showPreferences() {

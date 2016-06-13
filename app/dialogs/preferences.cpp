@@ -66,6 +66,7 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
     setLayout(mainLayout);
 
     setWindowTitle(tr("Preferences"));
+    setModal(true);
 }
 
 void PreferencesDialog::createIcons() {

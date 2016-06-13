@@ -40,6 +40,10 @@ namespace tdx {
                     initialize();
                 }
                 
+                QLineEdit* pathLineEditWidget() {
+                    return pathEdit_;
+                }
+                
                 QString path() {
                     return pathEdit_->text();
                 }

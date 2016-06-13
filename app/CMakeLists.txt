@@ -113,6 +113,7 @@ set(MOC_HDRS
         wizards/import_images_wizard.hpp
         wizards/import_options_page.hpp
         wizards/label_wizard_page.hpp
+        wizards/open_project_wizard.hpp
    )
 
 # Create the Sources from the MOC headers
